@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
+app.config['SECRET_KEY'] = 'secret123'
 app.config['MONGO_DBNAME'] = 'task_manager'
 app.config['MONGO_URI'] = os.getenv('MONGO_URI1')  # 'MONGO_URI1' is saved in environment variables, to hide password
 
@@ -12,6 +13,7 @@ mongo = PyMongo(app)
 
 @app.route('/')
 def home():
+    flash('You are now registered!', 'success')
     return render_template('base.html')
 
 
