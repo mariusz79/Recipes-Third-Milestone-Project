@@ -107,12 +107,23 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
-
 @app.route("/logout")
 def logout():
     logout_user()
     flash('You are now logged out', 'info')
     return redirect(url_for('login'))
+
+def count_document(category, subcategory):
+        if category == 'servings' or category == 'prep_time':
+            nums = subcategory.split('-')
+            recipes = mongo.db.recipes.count_documents({ category : { '$gt' :  int(nums[0]), '$lt' : int(nums[1])}})
+        else:
+            recipes = mongo.db.recipes.count_documents({category: subcategory})
+        return recipes
+
+@app.route("/statistics")
+def statistics():
+    return render_template('statistics.html', count_document=count_document, title='Statistics')
     
 @app.route('/')
 def home():

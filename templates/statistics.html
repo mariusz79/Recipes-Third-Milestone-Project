@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card-action teal lighten-1 white-text center">
+        <h1>Statistics</h1>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col s12 m6 ">
+            <div class="card collection with-header">
+                <div class="collection-header">Servings</div><canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col s12 m6 ">
+            <div class="card collection with-header">
+                <div class="collection-header">Cousine</div><canvas id="myChart1"></canvas>
+            </div>
+        </div>
+
+        <div class="col s12 m6 ">
+            <div class="card collection with-header">
+                <div class="collection-header">Difficulty</div><canvas id="myChart2"></canvas>
+            </div>
+        </div>
+
+        <div class="col s12 m6 ">
+            <div class="card collection with-header">
+                <div class="collection-header">Preparation time in minutes</div><canvas id="myChart3"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+
+
+<script type="text/javascript">
+    Chart.defaults.global.responsive = true;
+    var ctx = $('#myChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        responsive: true,
+        data: {
+            labels: ['1-2 servings', '3-4 servings', '5-6 servings'],
+            datasets: [{
+                label: 'number of recipes',
+                data: ["{{count_document('servings', '0-3')}}", "{{count_document('servings', '2-5')}}", "{{count_document('servings', '4-7')}}"],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }]
+            }
+        }
+    });
+
+    var ctx = $('#myChart1');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        responsive: true,
+        data: {
+            labels: ['european', 'asian', 'african', 'american'],
+            datasets: [{
+                label: 'number of recipes',
+                data: ["{{count_document('cousine', 'european')}}", "{{count_document('cousine', 'asian')}}", "{{count_document('cousine', 'african')}}", "{{count_document('cousine', 'american')}}"],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(75, 134, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(75, 134, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: true,
+                position: 'right',
+                labels: {
+                    fontColor: 'rgb(255, 99, 132)',
+                }
+            },
+            scales: {
+                yAxes: [{
+                    display: false
+                }]
+            }
+        }
+    });
+
+    var ctx = $('#myChart2');
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Difficult', 'Medium', 'Easy'],
+            datasets: [{
+                label: 'number of recipes',
+                data: ["{{count_document('difficulty', 'difficult')}}", "{{count_document('difficulty', 'medium')}}", "{{count_document('difficulty', 'easy')}}"],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'right'
+            },
+            scales: {
+                yAxes: [{
+                    display: false
+                }]
+            }
+        }
+    });
+
+    var ctx = $('#myChart3');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        responsive: true,
+        data: {
+            labels: ['1-30', '30-60 ', '>60'],
+            datasets: [{
+                label: 'number of recipes',
+                data: ["{{count_document('prep_time', '0-31')}}", "{{count_document('prep_time', '30-61')}}", "{{count_document('prep_time', '60-181')}}"],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+{% endblock content %}
