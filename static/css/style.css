@@ -111,6 +111,39 @@ main {
     color: #fff;
 }
 
+/*register*/
+/*hide part of text that is too long*/
+.card .card-content .card-title {
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: -1px;
+    color: rgb(6, 128, 79);
+    margin-bottom: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/*on hover show full text*/
+.card .card-content .card-title:hover{
+    overflow: visible; 
+    white-space: normal;
+    height:auto; 
+}
+.card .card-content p{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.card .card-content p:hover{
+    overflow: visible; 
+    white-space: normal;
+    height:auto; 
+}
+.card .card-action {
+    padding: 2px 24px;
+    font-size: large;
+}
+
 /*media queries*/
 @media (max-width: 600px){
 .social-icons, .footer-links{

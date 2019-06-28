@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12 m8 offset-m2 ">
+            <div class="card">
+                <div class="card-action light-blue darken-1 white-text center">
+                    <h3>Register</h3>
+                </div>
+                <div class="card-content">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div>
+                            <i class="far fa-user"></i>
+                            {{ form.username.label(class="input-field  validate") }}
+
+                            {% if form.username.errors %}
+                            {{ form.username(class="input-field  validate invalid") }}
+                            <div class="invalid">
+                                {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.username(class="input-field  validate valid") }}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <i class="fas fa-lock"></i>
+                            {{ form.password.label(class="input-field  validate") }}
+                            {% if form.password.errors %}
+                            {{ form.password(class="input-field  validate invalid") }}
+                            <div class="invalid">
+                                {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.password(class="input-field  validate valid") }}
+                            {% endif %}
+                        </div>
+                        <div class="">
+                            <i class="fas fa-lock"></i>
+                            {{ form.confirm.label(class="input-field  validate") }}
+                            {% if form.confirm.errors %}
+                            {{ form.confirm(class="input-field  validate invalid") }}
+                            <div class="invalid">
+                                {% for error in form.confirm.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.confirm(class="input-field  validate valid") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="">
+                            <button class="btn  light-blue darken-1 waves-effect waves-light" type="submit"
+                                name="action">Register &nbsp;
+                                <i class="fas fa-user-plus"></i>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <small>
+                Already Have An Account? <a class="l2" href="#">Login</a>
+            </small>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
