@@ -40,9 +40,9 @@
                                 Search</a></li>
                         <li class="right"><a href="#"><i class="fas fa-envelope nav-icon"></i>
                                 Contact</a></li>
-                        <li class="right"><a href="#"><i class="fas fa-user-plus nav-icon"></i>
+                        <li class="right"><a href="{{url_for('register')}}"><i class="fas fa-user-plus nav-icon"></i>
                                 Register</a></li>
-                        <li class="right"><a href="#"><i class="fas fa-sign-in-alt nav-icon"></i>
+                        <li class="right"><a href="{{url_for('login')}}"><i class="fas fa-sign-in-alt nav-icon"></i>
                                 Login</a></li>
                         <li class="right"><a href="#"><i
                                     class="fas fa-plus-circle nav-icon"></i> Add Recipe</a></li>
@@ -64,9 +64,9 @@
                             class="far fa-chart-bar"></i></span>Statistics</a></li>
             <li class="center"><a href="#"><span class="sidenav-icon"><i
                             class="fas fa-archive"></i></span>All Recipes</a></li>
-            <li class="center"><a href="#"><span class="sidenav-icon"><i
+            <li class="center"><a href="{{url_for('register')}}"><span class="sidenav-icon"><i
                             class="fas fa-user-plus"></i></span>Register</a></li>
-            <li class="center"><a href="#"><span class="sidenav-icon"><i
+            <li class="center"><a href="{{url_for('login')}}"><span class="sidenav-icon"><i
                             class="fas fa-sign-in-alt"></i></span>Login</a></li>
         </ul>
     </header>
