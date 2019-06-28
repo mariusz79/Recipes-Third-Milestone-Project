@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12 m8 offset-m2 ">
+            <div class="card">
+                <div class="card-action light-blue darken-1 white-text center ">
+                    <h3>Login</h3>
+                </div>
+                <div class="card-content">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div>
+                            <i class="far fa-user"></i>
+                            {{ form.username.label(class="input-field  validate") }}
+
+                            {% if form.username.errors %}
+                            {{ form.username(class="input-field  validate invalid") }}
+                            <div class="invalid">
+                                {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.username(class="input-field  validate valid") }}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <i class="fas fa-lock"></i>
+                            {{ form.password.label(class="input-field  validate") }}
+
+                            {% if form.password.errors %}
+                            {{ form.password(class="input-field  validate invalid") }}
+                            <div class="invalid">
+                                {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.password(class="input-field validate valid") }}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <button class="btn  waves-effect waves-light light-blue darken-1 " type="submit"
+                                name="action">Login &nbsp;
+                                <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <br>
+                        <p>
+                            {{ form.remember() }}
+                            <input type="checkbox" id="test5" />
+                            <label for="test5">Remember Me</label>
+                        </p>
+                    </form>
+                </div>
+            </div>
+            <small>
+                Need an Account? <a class="l2" href="{{ url_for('register') }}">Register</a>
+            </small>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

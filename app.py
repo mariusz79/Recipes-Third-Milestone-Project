@@ -11,10 +11,13 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 
 app = Flask(__name__)
-
 bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
+#where to redirect
+login_manager.login_view = 'login'
+#change message category
+login_manager.login_message_category = 'info'
 
 app.config['SECRET_KEY'] = 'secret123'
 app.config['MONGO_DBNAME'] = 'task_manager'
@@ -65,17 +68,45 @@ class RegisterForm(FlaskForm):
 def register():
     #create an instance of RegisterForm
     form = RegisterForm(request.form)
-    
+     
     if request.method == 'POST' and form.validate():
         username = form.username.data
-        password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        password = bcrypt.generate_password_hash(
+            form.password.data).decode('utf-8')
         date_of_registration = now.strftime("%b %d, %Y")
         users.insert_one({'username': username, 'password': password,
                           'date_of_registration': date_of_registration})
+        loginuser_json = users.find_one({'username': username})
+        loginuser = User(loginuser_json)
+        login_user(loginuser)
         flash('You are now registered!', 'success')
         return redirect(url_for('home'))
     return render_template("register.html", form=form, title='Register')
 
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = BooleanField('Remember Me')
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        loginuser_json = users.find_one({'username': form.username.data})
+        if loginuser_json and bcrypt.check_password_hash(loginuser_json['password'], form.password.data):
+            # Create a custom user and pass it to login_user:
+            loginuser = User(loginuser_json)
+            login_user(loginuser, remember=form.remember.data)
+            #redirect to a page that user wanted to enter but wasn't logged in
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+    
 @app.route('/')
 def home():
     return render_template('base.html')
