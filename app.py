@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 from flask_pymongo import PyMongo, pymongo
+from bson.objectid import ObjectId
 
 app = Flask(__name__)
 
@@ -11,7 +12,7 @@ mongo = PyMongo(app)
 
 @app.route('/')
 def home():
-    return 'Hello'
+    return render_template('base.html')
 
 
 if __name__ == '__main__':
