@@ -239,6 +239,54 @@ main {
     margin: 0 auto; 
 }
 
+/*home page*/
+.card-search{
+    width: 100%; 
+    margin: 0 auto;
+    padding: 1px;
+}
+
+.text-under-icon{
+    font-size: 1.4rem;
+}
+
+.home-page-icon{
+    font-size: 2rem;
+    color: rgb(22, 182, 182);
+    margin-bottom: 0.8rem;
+}
+
+.recipe-title-home-page{
+    font-size: 1.5rem;
+    margin-left: 0.4rem;
+}
+
+.title{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(205, 251, 247, 0.58);
+    color: black;
+}
+
+.likes{
+    width: auto;
+    position: absolute;
+    top: 0rem;
+    bottom: 12rem;
+    background-color: rgba(42, 165, 126, 0.973);
+    color: rgb(0, 255, 132);
+    font-size: 1.3rem;
+}
+
+.long-image-header{
+    height: 12rem;
+}
+
+.long-image{
+    height: 12rem;
+    width: 100%;
+}
 
 /*alerts*/
 .materialert{
@@ -383,7 +431,7 @@ font-size: xx-large;
     }
 
     .social-icons{
-    margin-top: 1rem;
+        margin-top: 1rem;
     }
 
     .recipe-button{
@@ -395,7 +443,7 @@ font-size: xx-large;
     }
 
     .recipe-image-panel{
-    padding: 3px;
+        padding: 3px;
     }
 
     .search{
@@ -407,7 +455,11 @@ font-size: xx-large;
     }
 
     .choose-field{
-       margin-top: 1rem;
+        margin-top: 1rem;
     }
+    .card-search{
+        width: 100%; 
+        margin: 0 auto;
+}
 }
 

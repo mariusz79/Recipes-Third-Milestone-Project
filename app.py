@@ -482,9 +482,21 @@ def results():
             flash('Type an expression to search', 'warning')
     return render_template('results.html', title='Results', form=form, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
 
-@app.route('/')
+
+@app.route("/")
+@app.route("/home", methods=["GET", "POST"])
 def home():
-    return render_template('base.html')
+    avatar_default = url_for('static', filename='users_avatars/default.jpg')
+    image_default = url_for(
+        'static', filename='default_recipe/default_recipe_image.png')
+    num_of_recipes = mongo.db.recipes.count_documents({})
+    num_of_users = mongo.db.users.count_documents({})
+    latest_recipes = mongo.db.recipes.find().sort(
+        '_id', pymongo.DESCENDING).limit(3)
+    most_liked_recipes = mongo.db.recipes.find(
+        {'likes': {'$exists': True}}, sort=[('likes', -1)], limit=3)
+    form = SearchForm(request.form)
+    return render_template("home.html", title='Recipes', form=form, find_user=find_user, count_document=count_document, avatar_default=avatar_default, image_default=image_default, num_of_recipes=num_of_recipes, num_of_users=num_of_users, latest_recipes=latest_recipes, most_liked_recipes=most_liked_recipes)
 
 
 if __name__ == '__main__':

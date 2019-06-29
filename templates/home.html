@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="slider">
+    <ul class="slides">
+        <li>
+            <img src="{{url_for('static', filename='front_page/1.jpg')}}">
+            <div class="caption center-align">
+                <h3>Welcome to Recipes website!</h3>
+                <h5 class="light grey-text text-lighten-3">Where all recipes are added by users.</h5>
+            </div>
+        </li>
+        <li>
+            <img src="{{url_for('static', filename='front_page/2.jpg')}}">
+            <div class="caption left-align">
+                <h3>We have all recipes you need.</h3>
+                <h5 class="light grey-text text-lighten-3">And even more <i class="far fa-smile-wink"></i></h5>
+            </div>
+        </li>
+        <li>
+            <img src="{{url_for('static', filename='front_page/3.jpg')}}">
+            <div class="caption right-align">
+                <h3 class="teal-text text-darken-2">Browse our catalog.</h3>
+                <h5 class=" teal-text text-darken-2">You will find something for you.</h5>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+<section class="section teal dark-text center">
+    <br>
+    <div class="container">
+        <div class="card-search">
+            <form method="POST" action="{{ url_for('results') }}">
+                <div class="row search-bar">
+                    <div class="col s12 m8 center align">
+
+                        <div class="search">
+                            {{ form.search(class="input-field  search-field white validate valid", placeholder='SEARCH') }}
+                            <button type="submit" class="search-button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col s12 m4 center choose-area">
+
+                        {{ form.choose(class="input-field  choose-field  white  ") }}
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<div class="section blue-grey lighten-5">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m4 center">
+                <div class="card-panel"><i class="far fa-file-alt home-page-icon"></i><br><span
+                        class="text-under-icon">{{num_of_recipes}} recipes</span></div>
+            </div>
+            <div class="col s12 m4 center">
+                <div class="card-panel"><i class="far fa-user home-page-icon"></i><br><span class="text-under-icon">Added by
+                        {{num_of_users}} users</span></div>
+            </div>
+            <div class="col s12 m4 center">
+                <div class="card-panel"><i class="fas fa-hamburger home-page-icon"></i><br><span class="text-under-icon">In 5
+                        categories</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class=" section grey lighten-4">
+    <h4 class="center">
+        <span class="teal-text">Latest</span> Recipes</h4>
+    <div class="container">
+        <div class="row">
+            {%for recipe in latest_recipes %}
+            <div class="col s12 m4 l4  ">
+                <a href="single_recipe/{{recipe._id}}">
+                    <div class="card hoverable">
+                        <div class="card-image ">
+                            {% if 'recipe_image_name' in recipe %}
+                            <img src="{{url_for('file', filename=recipe['recipe_image_name'])}}" class="recipes-image ">
+                            {% else %}
+                            <img src="{{image_default}}" class="recipes-image">
+                            {% endif %}
+                        </div>
+
+                        <div class="title">
+                            <span class="recipe-title-home-page">{{recipe.title}}</span>
+                            <li>Added: {{recipe.date_of_adding}}</li>
+                            <li>By: {{recipe.author}}</li>
+                        </div>
+                </a>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+    </div>
+</section>
+
+
+<div class="section blue-grey lighten-5">
+    <h4 class="center">
+        <span class="teal-text">Most Liked</span> Recipes</h4>
+    <div class="container">
+        <div class="row">
+            {%for recipe in most_liked_recipes %}
+            <div class="col s12 m4 l4  ">
+                <a href="single_recipe/{{recipe._id}}">
+                    <div class="card hoverable">
+                        <div class="card-image ">
+                            {% if 'recipe_image_name' in recipe %}
+                            <img src="{{url_for('file', filename=recipe['recipe_image_name'])}}" class="recipes-image ">
+                            {% else %}
+                            <img src="{{image_default}}" class="recipes-image">
+                            {% endif %}
+                        </div>
+
+                        <div class="likes">
+                            {{recipe.likes}} likes
+                        </div>
+
+                        <div class="title">
+                            <span class="recipe-title-home-page">{{recipe.title}}</span>
+                            <li>Added: {{recipe.date_of_adding}}</li>
+                            <li>By: {{recipe.author}}</li>
+                        </div>
+                </a>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.collapsible').collapsible();
+        $('.flash').delay().fadeIn('normal', function () {
+            $(this).delay(3000).fadeOut();
+        });
+        $('.slider').slider({
+            indicators: false,
+            height: 320,
+            transition: 400,
+            interval: 4000
+        });
+    });
+</script>
+
+{% endblock content %}
