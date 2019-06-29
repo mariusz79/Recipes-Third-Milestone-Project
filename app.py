@@ -22,6 +22,8 @@ login_manager.login_message_category = 'info'
 app.config['SECRET_KEY'] = 'secret123'
 app.config['MONGO_DBNAME'] = 'task_manager'
 app.config['MONGO_URI'] = os.getenv('MONGO_URI1')  # 'MONGO_URI1' is saved in environmental variables, to hide password
+app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 mongo = PyMongo(app)
 
@@ -185,8 +187,56 @@ def add_recipe():
                                      'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'author': author, 'date_of_adding': date_of_adding})
 
         flash('Data saved, You can add image', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('add_recipe_image', recipe_id=result.inserted_id))
     return render_template("add_recipe.html", form=form, title='Add Recipe')
+
+
+def allowed_image(filename):
+    # We only want files with a . in the filename
+    if not "." in filename:
+        return False
+    # Split the extension from the filename
+    ext = filename.rsplit(".", 1)[1]
+    # Check if the extension is in ALLOWED_IMAGE_EXTENSIONS
+    if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
+        return True
+    else:
+        return False
+
+
+def allowed_image_filesize(filesize):
+    if int(filesize) <= app.config['MAX_CONTENT_LENGTH']:
+        return True
+    else:
+        return False
+
+
+@app.route('/add_recipe_image/<recipe_id>')
+def add_recipe_image(recipe_id):
+    the_recipe = mongo.db.recipes.find_one({'_id': ObjectId(recipe_id)})
+    return render_template('add_recipe_image.html', recipe_id=recipe_id, recipe=the_recipe, title='Add Image')
+
+
+@app.route('/upload_recipe_image/<recipe_id>', methods=["GET", "POST"])
+def upload_recipe_image(recipe_id):
+    if 'recipe_image' in request.files:
+        recipe_image = request.files['recipe_image']
+        if recipe_image.filename == "":
+                    flash('No file selected!', 'error')
+                    return redirect(url_for('add_recipe_image', recipe_id=recipe_id))
+        if not allowed_image(recipe_image.filename):
+                    flash('That file extension is not allowed!', 'error')
+                    return redirect(url_for('add_recipe_image', recipe_id=recipe_id))
+        mongo.save_file(recipe_image.filename, recipe_image)
+
+        mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {
+                                    '$set': {'recipe_image_name': recipe_image.filename}})
+        flash('Image has been added', 'success')
+    return redirect(url_for('home'))
+
+@app.route('/file/<filename>')
+def file(filename):
+    return mongo.send_file(filename)
     
 @app.route('/')
 def home():
