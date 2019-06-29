@@ -140,7 +140,140 @@
 </div>
 
 
+<section class=" section grey lighten-4">
+    <h4 class="center">
+        <span class="teal-text">Browse</span> by category</h4>
 
+    <div class="container">
+
+        <div class="row">
+            <div class="col s12 m4 ">
+                <ul class="collapsible " data-collapsible="accordion">
+                    <li class="collection-header long-image-header"><img
+                            src="{{url_for('static', filename='categories/difficlut.jpg')}}" class="long-image"></li>
+                    <li>
+                        <div class="collapsible-header">Difficulty<span class="right"><i
+                                    class="fas fa-angle-down"></i></span></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'difficulty',  subcategory ='easy', page =0)}}"><span>Easy({{count_document('difficulty', 'easy')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'difficulty',  subcategory ='medium', page =0)}}"><span>Medium({{count_document('difficulty', 'medium')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'difficulty', subcategory ='difficult', page =0)}}"><span>Difficult({{count_document('difficulty', 'difficult')}})</span></a>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="col s12 m4 ">
+                <ul class="collapsible " data-collapsible="accordion">
+                    <li class="collection-header long-image-header"><img
+                            src="{{url_for('static', filename='categories/clock.jpg')}}" class="long-image"></li>
+                    <li>
+                        <div class="collapsible-header">Prep time<span class="right"><i
+                                    class="fas fa-angle-down"></i></span></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'prep_time', subcategory='0-31', page =0)}}"><span>1-30
+                                    minutes({{count_document('prep_time', '0-31')}})</span></a></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'prep_time', subcategory='30-61', page =0)}}"><span>30-60
+                                    minutes({{count_document('prep_time', '30-61')}})</span></a></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'prep_time', subcategory='60-181', page =0)}}"><span>More
+                                    than an hour({{count_document('prep_time', '60-181')}})</span></a></div>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="col s12 m4 ">
+                <ul class="collapsible " data-collapsible="accordion">
+                    <li class="collection-header long-image-header"><img
+                            src="{{url_for('static', filename='categories/ingredient.jpg')}}" class="long-image"> </li>
+                    <li>
+                        <div class="collapsible-header">Main ingredient<span class="right"><i
+                                    class="fas fa-angle-down"></i></span></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='eggs', page =0)}}"><span>Eggs({{count_document('main_ingredient', 'eggs')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='cheese', page =0)}}"><span>Cheese({{count_document('main_ingredient', 'cheese')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='pasta', page =0)}}"><span>Pasta({{count_document('main_ingredient', 'pasta')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='wheat', page =0)}}"><span>Wheat({{count_document('main_ingredient', 'wheat')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='vegs', page =0)}}"><span>Vegs({{count_document('main_ingredient', 'vegs')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='fruits', page =0)}}"><span>Fruits({{count_document('main_ingredient', 'fruits')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'main_ingredient', subcategory='meat', page =0)}}"><span>Meat({{count_document('main_ingredient', 'meat')}})</span></a>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col s12 m4 ">
+                <ul class="collapsible " data-collapsible="accordion">
+                    <li class="collection-header long-image-header"><img
+                            src="{{url_for('static', filename='categories/cousine.jpg')}}" class="long-image"></li>
+                    <li>
+                        <div class="collapsible-header">Cousine<span class="right"><i
+                                    class="fas fa-angle-down"></i></span>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'cousine', subcategory='american', page =0)}}"><span>American({{count_document('cousine', 'american')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'cousine', subcategory='african', page =0)}}"><span>African({{count_document('cousine', 'african')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'cousine', subcategory='european', page =0)}}"><span>European({{count_document('cousine', 'european')}})</span></a>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'cousine', subcategory='asian', page =0)}}"><span>Asian({{count_document('cousine', 'asian')}})</span></a>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="col s12 m4 ">
+                <ul class="collapsible " data-collapsible="accordion">
+                    <li class="collection-header long-image-header"><img
+                            src="{{url_for('static', filename='categories/servings.jpg')}}" class="long-image"></li>
+                    <li>
+                        <div class="collapsible-header">Servings<span class="right"><i
+                                    class="fas fa-angle-down"></i></span>
+                        </div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'servings', subcategory ='0-3', page =0)}}"><span>1-2
+                                    servings({{count_document('servings', '0-3')}})</span></a></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'servings', subcategory ='2-5', page =0)}}"><span>3-4
+                                    servings({{count_document('servings', '2-5')}})</span></a></div>
+                        <div class="collapsible-body"><a
+                                href="{{url_for('browse', category = 'servings', subcategory ='4-7', page =0)}}"><span>5-6
+                                    servings({{count_document('servings', '4-7')}})</span></a></div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script type="text/javascript">

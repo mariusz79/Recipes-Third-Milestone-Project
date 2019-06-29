@@ -498,6 +498,18 @@ def home():
     form = SearchForm(request.form)
     return render_template("home.html", title='Recipes', form=form, find_user=find_user, count_document=count_document, avatar_default=avatar_default, image_default=image_default, num_of_recipes=num_of_recipes, num_of_users=num_of_users, latest_recipes=latest_recipes, most_liked_recipes=most_liked_recipes)
 
+@app.route("/browse/<string:category>/<string:subcategory>/<int:page>")
+def browse(category, subcategory, page):
+    avatar_default = url_for('static', filename='users_avatars/default.jpg')
+    image_default = url_for('static', filename='default_recipe/default_recipe_image.png')
+    if category == 'servings' or category == 'prep_time':
+        nums = subcategory.split('-')
+        recipes = mongo.db.recipes.find({ category : { '$gt' :  int(nums[0]), '$lt' : int(nums[1])}}).limit(6).skip(int(page*6))
+    else:
+        recipes = mongo.db.recipes.find({category: subcategory}).limit(6).skip(int(page*6))
+    num_results = recipes.count()
+    nums = subcategory.split('-')
+    return render_template('browse.html', title='Browse', page=page, category =category, subcategory=subcategory, nums=nums, recipes=recipes, num_results=num_results, avatar_default=avatar_default, image_default=image_default, find_user=find_user)
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
