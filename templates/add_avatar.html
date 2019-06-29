@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="container">
+        <div class="center card teal lighten-1 white-text add-recipe-title">
+            <h3>Add image</h3>
+        </div>
+        <br>
+
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <div class="file-field input-field">
+                <div class="btn">
+                    <i class="fas fa-paperclip"></i>
+                    <span>Add File</span>
+                    <input type="file" name="profile_image">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+            <input type="submit" class="btn waves-effect lighten-4" value="Send Image">
+            <a href="{{url_for('home')}}"
+                class="btn  grey lighten-3 black-text waves-effect waves-light cancel-button">Cancel</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

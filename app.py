@@ -234,6 +234,31 @@ def upload_recipe_image(recipe_id):
         flash('Image has been added', 'success')
     return redirect(url_for('home'))
 
+
+@app.route('/add_image')
+def add_image():
+    return render_template('add_avatar.html')
+
+
+@app.route('/upload', methods=["GET", "POST"])
+def upload():
+    if 'profile_image' in request.files:
+        profile_image = request.files['profile_image']
+        if profile_image.filename == "":
+                    flash('No file selected!', 'error')
+                    return redirect(url_for('add_image'))
+        if not allowed_image(profile_image.filename):
+                    flash('That file extension is not allowed!', 'error')
+                    return redirect(url_for('add_image'))
+        mongo.save_file(profile_image.filename, profile_image)
+        user_id = current_user.get_id()
+        user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+        username = user['username']
+        mongo.db.users.update_one({'username': username}, {
+                                  '$set': {'profile_image_name': profile_image.filename}})
+        flash('Your avatar has been added', 'success')
+        return redirect(url_for('home'))
+
 @app.route('/file/<filename>')
 def file(filename):
     return mongo.send_file(filename)
