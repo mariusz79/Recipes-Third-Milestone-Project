@@ -232,7 +232,7 @@ def upload_recipe_image(recipe_id):
         mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {
                                     '$set': {'recipe_image_name': recipe_image.filename}})
         flash('Image has been added', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/add_image')
@@ -257,7 +257,7 @@ def upload():
         mongo.db.users.update_one({'username': username}, {
                                   '$set': {'profile_image_name': profile_image.filename}})
         flash('Your avatar has been added', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
 
 @app.route('/file/<filename>')
 def file(filename):
@@ -286,7 +286,7 @@ def edit_recipe(recipe_id):
                        '$set': {'title': title.capitalize(), 'main_ingredient': main_ingredient, 'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
                                 'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'date_of_update': date_of_update}})
         flash('Your recipe has been updated', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('dashboard'))
     elif request.method == 'GET':
         form.title.data = recipe['title']
         form.body.data = recipe['body']
@@ -305,7 +305,7 @@ def edit_recipe(recipe_id):
 def delete_recipe(recipe_id):
     mongo.db.recipes.remove({'_id': ObjectId(recipe_id)})
     flash('Recipe Deleted', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 def find_user(username):
         user_ = mongo.db.users.find_one({'username': username})
@@ -341,7 +341,7 @@ def single_recipe(recipe_id):
 
     return render_template('single_recipe.html', title='The Recipe', recipe=the_recipe, user=user, ingredients=ingredients, keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
     
-    
+
 @app.route("/like_recipe/<string:recipe_id>",  methods=["GET", "POST"])
 @login_required
 def like_recipe(recipe_id):
@@ -383,6 +383,25 @@ def add_comment(recipe_id, comment):
     mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {
                                 '$inc': {'comments_number': 1}})
     return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
+
+
+@app.route("/dashboard", methods=["GET", "POST"])
+@login_required
+def dashboard():
+    user_id = current_user.get_id()
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    avatar_default = url_for('static', filename='users_avatars/default.jpg')
+    recipes = mongo.db.recipes.find(
+        {'author': user['username']}).sort('_id', pymongo.DESCENDING)
+    num_of_recipes = mongo.db.recipes.count_documents(
+        {'author': user['username']})
+
+    def find_recipe_name(recipe_id):
+            find_recipe = mongo.db.recipes.find_one(
+                {"_id": ObjectId(recipe_id)})
+            if find_recipe:
+                return find_recipe['title']
+    return render_template("dashboard.html", find_recipe_name=find_recipe_name, title='Dashboard', user=user, avatar_default=avatar_default, recipes=recipes, num_of_recipes=num_of_recipes)
 
 
 @app.route('/')
