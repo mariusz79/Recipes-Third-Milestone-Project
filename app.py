@@ -237,6 +237,42 @@ def upload_recipe_image(recipe_id):
 @app.route('/file/<filename>')
 def file(filename):
     return mongo.send_file(filename)
+
+
+@app.route("/edit_recipe/<string:recipe_id>", methods=['GET', 'POST'])
+@login_required
+def edit_recipe(recipe_id):
+    recipe = mongo.db.recipes.find_one({'_id': ObjectId(recipe_id)})
+    form = RecipeForm(request.form)
+    now = datetime.utcnow()
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+        main_ingredient = form.main_ingredient.data
+        ingredients = form.ingredients.data
+        servings = form.servings.data
+        prep_time = form.prep_time.data
+        difficulty = form.difficulty.data
+        cousine = form.cousine.data
+        keywords = form.keywords.data
+        date_of_update = now.strftime("%b %d, %Y")
+        recipes = mongo.db.recipes
+        recipes.update({'_id': ObjectId(recipe_id)}, {
+                       '$set': {'title': title.capitalize(), 'main_ingredient': main_ingredient, 'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
+                                'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'date_of_update': date_of_update}})
+        flash('Your recipe has been updated', 'success')
+        return redirect(url_for('home'))
+    elif request.method == 'GET':
+        form.title.data = recipe['title']
+        form.body.data = recipe['body']
+        form.main_ingredient.data = recipe['main_ingredient']
+        form.ingredients.data = recipe['ingredients']
+        form.servings.data = recipe['servings']
+        form.prep_time.data = recipe['prep_time']
+        form.difficulty.data = recipe['difficulty']
+        form.cousine.data = recipe['cousine']
+        form.keywords.data = recipe['keywords']
+    return render_template('edit_recipe.html', title='Edit recipe', recipe=recipe, form=form)
     
 @app.route('/')
 def home():
