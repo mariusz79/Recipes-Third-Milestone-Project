@@ -273,6 +273,14 @@ def edit_recipe(recipe_id):
         form.cousine.data = recipe['cousine']
         form.keywords.data = recipe['keywords']
     return render_template('edit_recipe.html', title='Edit recipe', recipe=recipe, form=form)
+
+
+@app.route('/delete_recipe/<string:recipe_id>', methods=['POST'])
+@login_required
+def delete_recipe(recipe_id):
+    mongo.db.recipes.remove({'_id': ObjectId(recipe_id)})
+    flash('Recipe Deleted', 'success')
+    return redirect(url_for('home'))
     
 @app.route('/')
 def home():
