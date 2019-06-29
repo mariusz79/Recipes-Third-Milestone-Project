@@ -306,6 +306,41 @@ def delete_recipe(recipe_id):
     mongo.db.recipes.remove({'_id': ObjectId(recipe_id)})
     flash('Recipe Deleted', 'success')
     return redirect(url_for('home'))
+
+def find_user(username):
+        user_ = mongo.db.users.find_one({'username': username})
+        return user_
+
+
+class CommentForm(FlaskForm):
+    comment = TextAreaField('comment', validators=[
+                            DataRequired(), Length(max=200)])
+
+@app.route("/all_recipes/single_recipe/<string:recipe_id>")
+@app.route("/single_recipe/<string:recipe_id>", methods=["GET", "POST"])
+def single_recipe(recipe_id):
+    mongo.db.recipes.update_one(
+        {'_id': ObjectId(recipe_id)}, {'$inc': {'views': 1}})
+    the_recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    ingredients = the_recipe['ingredients'].split(",")
+    keywords = the_recipe['keywords'].split(",")
+    form = CommentForm(request.form)
+    now = datetime.utcnow()
+    avatar_default = url_for('static', filename='users_avatars/default.jpg')
+    image_default = url_for(
+        'static', filename='default_recipe/default_recipe_image.png')
+    user_id = current_user.get_id()
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    if current_user.is_authenticated:
+        author = user['username']
+    comment = form.comment.data
+    date_of_adding = now.strftime("%b %d, %Y")
+
+    if request.method == "POST" and form.validate:
+
+            return redirect(url_for('home'))
+
+    return render_template('single_recipe.html', recipe=the_recipe, user=user, ingredients=ingredients, keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
     
 @app.route('/')
 def home():

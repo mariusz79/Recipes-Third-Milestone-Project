@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a id="button"><i class="fa fa-angle-up arrow-up"></i></a>
+
+<div class="container">
+
+    <div class="center">
+        <div class="recipe-title">
+            <h2>{{recipe.title}}</h2>
+        </div>
+        <div class="col s12 m6 card-panel recipe-image-panel">
+            {% if 'recipe_image_name' in recipe %}
+            <img src="{{url_for('file', filename=recipe['recipe_image_name'])}}" class="responsive-img   center">
+            {% else %}
+            <img src="{{image_default}}" class=" responsive-img center">
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col s6 m3  center" style="padding-right: .4rem;">
+            <div class="card  info-card teal lighten-4">
+                <div><i class="fas fa-clock card-icon"></i></div>
+                <div>PREP TIME:</div>
+                <div>{{recipe.prep_time}} minutes</div>
+            </div>
+        </div>
+        <div class="col s6 m3  center" style="padding-left: .4rem;">
+            <div class="card  info-card teal lighten-4">
+                <div><i class="fas fa-users card-icon"></i></div>
+                <div>SERVINGS:</div>
+                <div>{{recipe.servings}}</div>
+            </div>
+        </div>
+        <div class="col s6 m3  center" style="padding-right: .4rem;">
+            <div class="card info-card teal lighten-4">
+                <div><i class="fas fa-fire-alt card-icon"></i></div>
+                <div>DIFFICULTY:</div>
+                <div>{{recipe.difficulty.capitalize()}}</div>
+            </div>
+        </div>
+        <div class="col s6 m3  center" style="padding-left: .4rem;">
+            <div class="card  info-card teal lighten-4">
+                <div><i class="fas fa-utensils card-icon"></i></div>
+                <div>COUSINE:</div>
+                <div>{{recipe.cousine.capitalize()}}</div>
+            </div>
+        </div>
+    </div>
+
+    <blockquote>
+        Added by
+        {% if 'profile_image_name' in find_user(recipe.author) %}
+        <img src="{{url_for('file', filename=find_user(recipe.author)['profile_image_name'])}}" alt=""
+            class="circle single-recipe-avatar  ">
+        {% else %}
+        <img src="{{avatar_default}}" alt="" class="circle single-recipe-avatar ">
+        {% endif %}
+        {{recipe.author}} on {{recipe.date_of_adding}}
+    </blockquote>
+
+    <hr>
+
+    <div class="row">
+        <div class="col s12 m6">
+            <h5>
+                <p class="single-recipe-divs">Main ingredient:</p>
+            </h5>
+            <span class="main-ingredient">{{recipe.main_ingredient}}</span>
+            <hr>
+            <h5>
+                <p class="single-recipe-divs">Keywords:</p>
+            </h5>
+            {% for keyword in keywords %}
+            <div class="chip">{{keyword}}</div>
+            {% endfor %}
+            <hr class="hide-on-med-and-up">
+        </div>
+
+        <div class="col s12 m6">
+            <h4 class="single-recipe-divs">Ingredients:</h4>
+            <ul>
+                {% for ingredient in ingredients %}
+                <li>- {{ingredient}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <div>
+        <h4 class="single-recipe-divs">Instructions:</h4>
+        <span class="flow-text">{{recipe.body}}</span>
+    </div>
+    <hr>
+    <div class="row info">
+        <div class="col">
+            <i class="far fa-eye"></i>
+            Views:
+            {%if recipe.views%}
+            ({{recipe.views}})
+            {%else%}
+            (0)
+            {%endif%}
+            &nbsp;
+            <i class="far fa-thumbs-up"></i>
+            Likes:
+            {%if recipe.likes%}
+            ({{recipe.likes}})
+            {%else%}
+            (0)
+            {%endif%}
+            &nbsp;
+            <span class="comments-icon">
+                <i class="far fa-comment"></i>
+                Comments:
+                {%if recipe.comments_number%}
+                ({{recipe.comments_number}})
+                {%else%}
+                (0)
+                {%endif%}
+            </span>
+        </div>
+    </div>
+
+    <div class="like-button">
+        {%if current_user.is_authenticated%}
+        {%if recipe._id not in user.liked and user.username != recipe.author%}
+        <a href="{{url_for('like_recipe', recipe_id=recipe._id)}}" class="waves-effect waves-green btn blue darken-1"><i
+                class="far fa-thumbs-up"></i>Like</a>
+        {%else%}
+        <a class="btn disabled "><i class="far fa-thumbs-up"></i>Like</a>
+        {%endif%}
+        {%else%}
+        <a href="{{url_for('like_recipe', recipe_id=recipe._id)}}" class="waves-effect waves-blue btn grey lighten-2">
+            <i class="far fa-thumbs-up"></i>Like</a>
+        {%endif%}
+    </div>
+
+    <div class="comments">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.comment.label(id="textarea1", class="materialize-textarea  validate") }}
+                {% if form.comment.errors %}
+                {{ form.comment(id="textarea1", class="materialize-textarea invalid") }}
+                <div class="invalid">
+                    {% for error in form.comment.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.comment(id="textarea1", class="materialize-textarea valid") }}
+                {% endif %}
+            </div>
+
+            <div>
+                <button class="btn  waves-effect waves-light" type="submit"><i class="fas fa-paper-plane"></i> Add
+                    comment
+            </div>
+        </form>
+
+        <div>
+            {%for comment in recipe.comments|reverse %}
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    {% if 'profile_image_name' in find_user(comment.author) %}
+                    <img src="{{url_for('file', filename=find_user(comment.author)['profile_image_name'])}}" alt=""
+                        class="circle responsive-img">
+                    {% else %}
+                    <img src="{{avatar_default}}" alt="" class="circle responsive-img">
+                    {% endif %}
+                    <span><strong>{{comment.author}}</strong>, &nbsp; on {{comment.date_of_adding}}</span>
+                    <br>
+                    {{comment.comment}}
+                </li>
+            </ul>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.materialboxed').materialbox();
+        $('.flash').delay().fadeIn('normal', function () {
+            $(this).delay(3000).fadeOut();
+        });
+       });
+
+</script>
+{% endblock %}

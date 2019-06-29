@@ -13,8 +13,11 @@ main {
     height: 2rem;
 }
 
-.brand-logo{
+.brand-logo, .recipe-title{
     font-family: 'Courgette', cursive;
+}
+.recipe-title{
+    color: darkcyan;
 }
 
 .nav-icon{
@@ -108,9 +111,59 @@ main {
     margin-top: 2rem;
     display: grid;
 }
+
 /*add image*/
 .waves-input-wrapper .waves-button-input {
     top: 10px;
+}
+
+/*single recipe*/
+.recipe-image-panel{
+    padding:10px;
+    display:inline-block;
+}
+
+.info-card{
+    margin: .1rem 0rem 0.4rem 0.2rem;
+}
+
+.card-icon{
+    font-size: 3rem;
+    color: #FF9800;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: 4rem;
+    margin-top: 3px;
+}
+
+.single-recipe-avatar{
+    width: 35px;
+    height: 35px;
+    vertical-align: middle;
+}
+
+.single-recipe-divs{
+    color: darkcyan;
+}
+
+.main-ingredient{
+    font-size: 1.2rem;
+}
+
+.info{
+    background-color: #f5f5f5;
+}
+
+.comments-icon{
+    white-space: nowrap;
+}
+
+.like-button{
+    margin-bottom: 1.5rem;
+}
+
+.comments{
+    margin-top: 1rem;
 }
 
 /*alerts*/
@@ -264,7 +317,11 @@ font-size: xx-large;
     }
 
     .cancel-button{
-        margin-top: 1.5rem;
+        margin-top: 1.5rem; 
+    }
+
+    .recipe-image-panel{
+    padding: 3px;
 }
 }
 
