@@ -71,6 +71,10 @@ main {
     color: black;
 }
 
+.about-terms-text{
+    padding: 10px;
+}
+
 /*dashboard*/
 .profile-button{
     margin-top: 1rem;
@@ -309,7 +313,6 @@ main {
     border: 1px solid transparent;
     border-radius: 4px;
     transition: all 0.1s linear;
-    webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
     display: -webkit-box;
     display: -webkit-flex;
@@ -346,7 +349,6 @@ main {
     color: #fff;
 }
 
-/*register*/
 /*hide part of text that is too long*/
 .card .card-content .card-title {
     font-size: 20px;
@@ -364,6 +366,12 @@ main {
     overflow: visible; 
     white-space: normal;
     height:auto; 
+}
+
+.card .card-content {
+    padding: 24px;
+    border-radius: 0 0 2px 2px;
+    padding-top: 0.3rem;
 }
 
 .card .card-content p{
@@ -445,6 +453,10 @@ font-size: xx-large;
 
     .recipe-button{
         width: 90%;
+    }
+
+    .profile-button{
+        width: 80%;
     }
 
     .cancel-button{

@@ -202,7 +202,7 @@ def add_recipe():
 
 
 def allowed_image(filename):
-    # We only want files with a . in the filename
+    # Only want files with a . in the filename
     if not "." in filename:
         return False
     # Split the extension from the filename
@@ -527,7 +527,6 @@ class ContactForm(FlaskForm):
     subject = StringField("Subject" , validators=[DataRequired(), Length(min=2, max=40)])
     message = TextAreaField("Message", validators=[DataRequired(), Length(min=2, max=300)])
     
-
 @app.route('/contact', methods=['GET','POST'])
 def contact():
   form = ContactForm()
@@ -542,6 +541,15 @@ def contact():
         flash('Your message has been sent!', 'success')
         return redirect(url_for('contact'))
   return render_template('contact.html', form=form, title='Contact')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html', title='Terms of use')
+
+@app.route('/about')
+def about():
+    return render_template('about.html', title='About')
+
 
 
 if __name__ == '__main__':
