@@ -237,7 +237,7 @@ def upload_recipe_image(recipe_id):
 
 @app.route('/add_image')
 def add_image():
-    return render_template('add_avatar.html')
+    return render_template('add_avatar.html', title='Add Avatar')
 
 
 @app.route('/upload', methods=["GET", "POST"])
@@ -337,11 +337,31 @@ def single_recipe(recipe_id):
     date_of_adding = now.strftime("%b %d, %Y")
 
     if request.method == "POST" and form.validate:
+            return redirect(url_for('add_comment', recipe_id=the_recipe['_id'], comment=comment))
 
-            return redirect(url_for('home'))
-
-    return render_template('single_recipe.html', recipe=the_recipe, user=user, ingredients=ingredients, keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
+    return render_template('single_recipe.html', title='The Recipe', recipe=the_recipe, user=user, ingredients=ingredients, keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
     
+
+@app.route("/add_comment/<string:recipe_id>/<string:comment>",  methods=["GET", "POST"])
+@login_required
+def add_comment(recipe_id, comment):
+    now = datetime.utcnow()
+    date_of_adding = now.strftime("%b %d, %Y")
+    user_id = current_user.get_id()
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    author = user['username']
+    the_recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    mongo.db.users.update_one({'_id': ObjectId(user_id)}, {
+                              '$push': {'commented_recipe_id': the_recipe['_id']}})
+    mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {'$push': {'comments': {
+                                'author': author, 'comment': comment, 'date_of_adding': date_of_adding}}})
+    mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {
+                                '$inc': {'views': -2}})
+    mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {
+                                '$inc': {'comments_number': 1}})
+    return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
+
+
 @app.route('/')
 def home():
     return render_template('base.html')
