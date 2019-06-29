@@ -395,7 +395,6 @@ def dashboard():
         {'author': user['username']}).sort('_id', pymongo.DESCENDING)
     num_of_recipes = mongo.db.recipes.count_documents(
         {'author': user['username']})
-
     def find_recipe_name(recipe_id):
             find_recipe = mongo.db.recipes.find_one(
                 {"_id": ObjectId(recipe_id)})
@@ -403,6 +402,36 @@ def dashboard():
                 return find_recipe['title']
     return render_template("dashboard.html", find_recipe_name=find_recipe_name, title='Dashboard', user=user, avatar_default=avatar_default, recipes=recipes, num_of_recipes=num_of_recipes)
 
+
+class SortForm(FlaskForm):
+    sort_by = SelectField(u'Sort by', choices=[('_id1', 'Newest first'), ('_id', 'Oldest first'), (
+        "title", 'Name A-Z'), ('title1', 'Name Z-A')], validators=[DataRequired()])
+        
+@app.route("/all_recipes/<string:name>/<int:page>", methods=["GET", "POST"])
+def all_recipes(name, page):
+    form = SortForm()
+    avatar_default = url_for('static', filename='users_avatars/default.jpg')
+    image_default = url_for(
+        'static', filename='default_recipe/default_recipe_image.png')
+
+    num_results = mongo.db.recipes.count_documents({})
+
+    sort_by = form.sort_by.data
+
+    form.sort_by.default = name
+    form.process()
+    if '1' in name:
+        name = name[:-1]
+        recipes = mongo.db.recipes.find().sort(
+            name, pymongo.DESCENDING).limit(6).skip(int(page*6))
+    else:
+        recipes = mongo.db.recipes.find().sort(name).limit(6).skip(int(page*6))
+
+    if request.method == "POST" and form.validate:
+            return redirect(url_for('all_recipes', name=sort_by, page=0))
+
+    return render_template("all_recipes.html", title='All Recipes', page=page, sort_by=sort_by, recipes=recipes, num_results=num_results, 
+    form=form,  find_user=find_user, image_default=image_default, avatar_default=avatar_default)
 
 @app.route('/')
 def home():

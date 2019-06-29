@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card-action teal lighten-1 white-text center">
+        <h1>All recipes</h1>
+    </div>
+
+    <hr>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col s8 m4">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.sort_by.label(id="textarea1", class="materialize-textarea  validate") }}
+                    {{form.sort_by(type='submit', onchange="this.form.submit()")}}
+                </div>
+        </div>
+        </form>
+    </div>
+    <hr>
+</div>
+
+<div class="container">
+    <div class="row">
+        {%for recipe in recipes %}
+        <div class="col s12 m6 l4  ">
+            <div class="card hoverable">
+                <a href="{{url_for('single_recipe', recipe_id=recipe._id)}}">
+                    <div class="card-image ">
+                        {% if 'recipe_image_name' in recipe %}
+                        <img src="{{url_for('file', filename=recipe['recipe_image_name'])}}" class="recipes-image">
+                        {% else %}
+                        <img src="{{image_default}}" class="recipes-image">
+                        {% endif %}
+                    </div>
+                </a>
+                <div class="card-content">
+                    <span class="card-title">{{recipe.title}}</span>
+                    <div>Main ingredient: <span class="main-ingredient-color">{{recipe.main_ingredient}}</span></div>
+                    {% if 'profile_image_name' in find_user(recipe.author) %}
+                    <p>By: <img src="{{url_for('file', filename=find_user(recipe.author)['profile_image_name'])}}"
+                            alt="" class="circle all-recipes-avatar  ">&nbsp; {{recipe.author}}
+                    </p>
+                    {% else %}
+                    <p>By: <img src="{{avatar_default}}" alt="" class="circle all-recipes-avatar  ">&nbsp; {{recipe.author}}
+                    </p>
+                    {% endif %}
+
+
+                    <div>Added: {{recipe.date_of_adding}}</div>
+
+                    <div class="row recipes-icons">
+                        <div class="col">
+                            <i class="far fa-thumbs-up"></i>
+                            {%if recipe.likes%}
+                            ({{recipe.likes}})
+                            {%else%}
+                            (0)
+                            {%endif%}
+                        </div>
+
+                        <div class="col views">
+                            <i class="far fa-eye"></i>
+
+                            {%if recipe.views%}
+                            ({{recipe.views}})
+                            {%else%}
+                            (0)
+                            {%endif%}
+                        </div>
+
+                        <div class="col">
+                            <i class="far fa-comment"></i>
+                            {%if recipe.comments_number%}
+                            ({{recipe.comments_number}})
+                            {%else%}
+                            (0)
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <a href="{{url_for('single_recipe', recipe_id=recipe._id)}}">View Recipe</a>
+                </div>
+            </div>
+        </div>
+
+        {%endfor%}
+    </div>
+    <!-- 
+        	First check if  actually need a pagination....
+        	If y have 6 documents for example and  display 6 documents as well 
+        	there is no need for pagination ...
+         -->
+    <div class="">
+        <ul class="pagination">
+            {% if num_results > 6 %}
+            <!-- 
+    			If this is first page (offset == 0) 
+    			prev_url link should not be displayed 
+            -->
+            {% if (page*6) > 0 %}
+            <li class="waves-effect"><a href="{{page-1}}" style="padding: 0px;"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            {% endif %}
+            {% if(page*6) + 6 > num_results %}
+            <span>{{(page*6)+1}}-{{num_results}} of {{num_results}}</span>
+            {% else %}
+            {{(page*6)+1}}-{{(page*6) +6}} of {{num_results}}
+            {% endif %}
+            <!-- 
+    			If this is last page (offset + limit == lenght of the documents) 
+    			prev_url link should not be displayed 
+            -->
+            {% if (page*6) + 6 < num_results  %}
+            <li class="waves-effect"><a href="{{page+1}}" style="padding: 0px;"><i class="fas fa-chevron-right"></i></a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}

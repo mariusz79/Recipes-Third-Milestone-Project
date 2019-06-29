@@ -166,6 +166,31 @@ main {
     margin-top: 1rem;
 }
 
+/*all recipes*/
+.recipes-image{
+    height: 15rem;
+}
+
+.main-ingredient-color{
+    color: #75e2b3;
+}
+
+.all-recipes-avatar{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.recipes-icons{
+    margin-bottom: 1px;
+}
+
+.views{
+    border-left: 1px solid #43a047;
+    border-right: 1px solid #43a047;
+}
+
+
+
 /*alerts*/
 .materialert{
     position: relative;
