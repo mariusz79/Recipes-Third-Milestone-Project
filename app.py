@@ -9,6 +9,7 @@ from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, N
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -18,6 +19,15 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 #change message category
 login_manager.login_message_category = 'info'
+
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = 'mpawlowic@gmail.com'
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = 'mpawlowic@gmail.com'
+
+mail = Mail(app)
 
 app.config['SECRET_KEY'] = 'secret123'
 app.config['MONGO_DBNAME'] = 'task_manager'
@@ -510,6 +520,29 @@ def browse(category, subcategory, page):
     num_results = recipes.count()
     nums = subcategory.split('-')
     return render_template('browse.html', title='Browse', page=page, category =category, subcategory=subcategory, nums=nums, recipes=recipes, num_results=num_results, avatar_default=avatar_default, image_default=image_default, find_user=find_user)
+
+class ContactForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired(), Length(min=2, max=40)])
+    email = StringField("Email" , validators=[DataRequired(), Length(min=2, max=30), Email()])
+    subject = StringField("Subject" , validators=[DataRequired(), Length(min=2, max=40)])
+    message = TextAreaField("Message", validators=[DataRequired(), Length(min=2, max=300)])
+    
+
+@app.route('/contact', methods=['GET','POST'])
+def contact():
+  form = ContactForm()
+  if request.method == 'POST' and form.validate():
+        name = form.name.data
+        email = form.email.data
+        subject = form.subject.data
+        message = form.message.data
+        msg = Message("Hi", recipients=['mpawlowic@gmail.com'])
+        msg.body = 'From: {name} \n email: {email} \n subject: {subject} \n message: {message}'.format(name=name, email=email, subject=subject, message=message)
+        mail.send(msg)
+        flash('Your message has been sent!', 'success')
+        return redirect(url_for('contact'))
+  return render_template('contact.html', form=form, title='Contact')
+
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
