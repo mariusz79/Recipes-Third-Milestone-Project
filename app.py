@@ -341,6 +341,29 @@ def single_recipe(recipe_id):
 
     return render_template('single_recipe.html', title='The Recipe', recipe=the_recipe, user=user, ingredients=ingredients, keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
     
+    
+@app.route("/like_recipe/<string:recipe_id>",  methods=["GET", "POST"])
+@login_required
+def like_recipe(recipe_id):
+    user_id = current_user.get_id()
+    user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+    the_recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    if 'liked' in user:
+        if the_recipe['_id'] in user['liked']:
+            flash('You can like recipe only once', 'info')
+            return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
+        elif user['username'] == the_recipe['author']:
+            flash("You can't like your own recipe", 'info')
+            return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
+        else:
+            mongo.db.users.update_one({'_id': ObjectId(user_id)}, {'$push': {'liked': the_recipe['_id']}})
+            mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {'$inc': {'likes': 1, 'views': -1}})
+            return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
+    else:
+            mongo.db.users.update_one({'_id': ObjectId(user_id)}, {'$push': {'liked': the_recipe['_id']}})
+            mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {'$inc': {'likes': 1, 'views': -1}})
+            return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
+
 
 @app.route("/add_comment/<string:recipe_id>/<string:comment>",  methods=["GET", "POST"])
 @login_required
