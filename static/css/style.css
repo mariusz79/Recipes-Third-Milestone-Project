@@ -27,6 +27,7 @@ main {
     margin-right: 3px;
     color: coral;
 }
+
 .side-nav li>a {
     color: rgba(9, 169, 126, 0.87);
     display: block;
@@ -37,13 +38,12 @@ main {
     padding: 0 32px;
     border-bottom: 1px solid gainsboro;
 }
+
 .side-nav li>a:hover{
     background: #75e2b3;
 }
 
 /*footer*/
-
-
 .footer-link:hover{
     color: rgb(20, 13, 1);
 }
@@ -54,16 +54,59 @@ main {
     margin-left: 1rem;
     margin-right: 1rem;
 }
+
 .social-icons{
     text-align: right;
-
 }
+
 .social-icon{
     font-size: 2rem;
     margin-right: 1rem;
 }
+
 .social-icon:hover{
     color: black;
+}
+
+/*dashboard*/
+.profile-button{
+    margin-top: 1rem;
+    margin-right: 5px;
+    height: 5rem;
+    border-radius: 3%;
+}
+
+.profile-button-icon{
+    font-size: 1.8rem;
+}
+
+.collapsible-header{
+    display: inherit;
+}
+
+.dashboard-link{
+    color: #ffa318;
+}
+
+.dashboard-link:hover{
+    color: #7aa5eb;
+}
+
+.recipe-button{
+    margin-bottom: 1rem;
+}
+
+#modal1{
+    overflow: inherit;
+    width:-moz-fit-content;
+    width: fit-content;
+}
+
+/*add recipe*/
+.add-recipe-title{
+    padding: 0;
+    margin-top: 2rem;
+    display: grid;
 }
 
 /*alerts*/
@@ -94,18 +137,22 @@ main {
     background-color: #039be5;
     color: #fff;
 }
+
 .materialert.success{
     background-color: #43a047;
     color: #fff;
 }
+
 .materialert.error{
     background-color: #c62828;
     color: #fff;
 }
+
 .materialert.danger{
     background-color: #c62828;
     color: #fff;
 }
+
 .materialert.warning{
     background-color: #fbc02d;
     color: #fff;
@@ -123,22 +170,26 @@ main {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 /*on hover show full text*/
 .card .card-content .card-title:hover{
     overflow: visible; 
     white-space: normal;
     height:auto; 
 }
+
 .card .card-content p{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .card .card-content p:hover{
     overflow: visible; 
     white-space: normal;
     height:auto; 
 }
+
 .card .card-action {
     padding: 2px 24px;
     font-size: large;
@@ -156,11 +207,12 @@ main {
   bottom: 2px;
   right: 30px;
   transition: background-color .3s, 
-    opacity .5s, visibility .5s;
+  opacity .5s, visibility .5s;
   opacity: 0;
   visibility: hidden;
   z-index: 1000;
 }
+
 #button-up::after {
   content: "";
   font-family: FontAwesome;
@@ -170,17 +222,21 @@ main {
   line-height: 50px;
   color: #fff;
 }
+
 #button-up:hover {
   cursor: pointer;
   background-color: #333;
 }
+
 #button-up:active {
   background-color: #555;
 }
+
 #button-up.show {
   opacity: 1;
   visibility: visible;
 }
+
 .arrow-up{
 font-size: xx-large;
     position: absolute;
@@ -188,13 +244,23 @@ font-size: xx-large;
     top: 9px;
     color: azure;
 }
+
 /*media queries*/
 @media (max-width: 600px){
-.social-icons, .footer-links{
-    text-align: center;
-}
-.social-icons{
-margin-top: 1rem;
+    .social-icons, .footer-links{
+        text-align: center;
+    }
+
+    .social-icons{
+    margin-top: 1rem;
+    }
+
+    .recipe-button{
+        width: 90%;
+    }
+
+    .cancel-button{
+        margin-top: 1.5rem;
 }
 }
 

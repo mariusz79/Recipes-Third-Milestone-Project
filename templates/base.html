@@ -30,44 +30,55 @@
                     <a href="#" data-activates="mobile-demo" class="button-collapse right"><i
                             class="fas fa-bars"></i></a>
                     <ul class="hide-on-med-and-down">
-                        <li class="left"><a href="#"><i class="fas fa-home nav-icon"></i> Home</a>
+                        <li class="left"><a href="{{url_for('home')}}"><i class="fas fa-home nav-icon"></i> Home</a>
                         </li>
-                        <li class="left"><a href="#"><i class="far fa-chart-bar nav-icon"></i>
+                        <li class="left"><a href="{{url_for('statistics')}}"><i class="far fa-chart-bar nav-icon"></i>
                                 Statistics</a></li>
-                        <li class="left"><a href="#"><i
-                                    class="fas fa-archive nav-icon"></i> All Recipes</a></li>
+                        <li class="left"><a href="#"><i class="fas fa-archive nav-icon"></i> All
+                                Recipes</a></li>
                         <li class="left"><a href="#"><i class="fas fa-search nav-icon"></i>
                                 Search</a></li>
                         <li class="right"><a href="#"><i class="fas fa-envelope nav-icon"></i>
                                 Contact</a></li>
+                        {% if current_user.is_authenticated %}
+                        <li class="right"><a href="{{url_for('logout')}}"><i class="fas fa-sign-out-alt nav-icon"></i>
+                                Logout</a></li>
+                        <li class="right"><a href="#"><i class="fas fa-tachometer-alt nav-icon"></i> Dashboard</a></li>
+                        {% else %}
                         <li class="right"><a href="{{url_for('register')}}"><i class="fas fa-user-plus nav-icon"></i>
                                 Register</a></li>
                         <li class="right"><a href="{{url_for('login')}}"><i class="fas fa-sign-in-alt nav-icon"></i>
                                 Login</a></li>
-                        <li class="right"><a href="#"><i
-                                    class="fas fa-plus-circle nav-icon"></i> Add Recipe</a></li>
+                        {% endif %}
+                        <li class="right"><a href="#"><i class="fas fa-plus-circle nav-icon"></i> Add Recipe</a></li>
                     </ul>
                 </div>
             </nav>
         </div>
         <ul class="side-nav" id="mobile-demo">
-            <li class="center"> <a href="#!"><span class="sidenav-icon"> <i
-                            class="far fa-times-circle"></i></span>Close</a></li>
+            <li class="center"> <a href="#!"><span class="sidenav-icon"> <i class="far fa-times-circle"></i></span>Close</a></li>
             <br>
-            <li class="center"><a href="#"><span class="sidenav-icon"><i
-                            class="fas fa-home"></i></span>Home</a></li>
+            <li class="center"><a href="{{url_for('home')}}"><span class="sidenav-icon"><i class="fas fa-home"></i></span>Home</a>
+            </li>
             <li class="center"><a href="#"><span class="sidenav-icon"><i
                             class="fas fa-search"></i></span>Search</a></li>
             <li class="center"><a href="#"><span class="sidenav-icon"><i
                             class="fas fa-plus-circle"></i></span>Add recipe</a></li>
-            <li class="center"><a href="#"><span class="sidenav-icon"><i
+            <li class="center"><a href="{{url_for('statistics')}}"><span class="sidenav-icon"><i
                             class="far fa-chart-bar"></i></span>Statistics</a></li>
             <li class="center"><a href="#"><span class="sidenav-icon"><i
                             class="fas fa-archive"></i></span>All Recipes</a></li>
+            {% if current_user.is_authenticated %}
+            <li class="center"><a href="#"><span class="sidenav-icon"><i
+                            class="fas fa-tachometer-alt"></i></span>Dashboard</a></li>
+            <li class="center"><a href="{{url_for('logout')}}"><span class="sidenav-icon"><i
+                            class="fas fa-sign-out-alt"></i></span>Logout</a></li>
+            {% else %}
             <li class="center"><a href="{{url_for('register')}}"><span class="sidenav-icon"><i
                             class="fas fa-user-plus"></i></span>Register</a></li>
             <li class="center"><a href="{{url_for('login')}}"><span class="sidenav-icon"><i
                             class="fas fa-sign-in-alt"></i></span>Login</a></li>
+            {% endif %}
         </ul>
     </header>
 
@@ -113,6 +124,11 @@
                 menuWidth: 300,
                 edge: 'right'
             });
+            $('#textarea1').val('New Text');
+            $('#textarea1').trigger('autoresize');
+            $(".dropdown-button").dropdown();
+            $('.collapsible').collapsible();
+            $('select').material_select();
             var btnup = $('#button-up');
 
             $(window).scroll(function () {

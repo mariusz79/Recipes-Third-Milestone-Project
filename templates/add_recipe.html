@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="container">
+        <div class="center card teal lighten-1 white-text add-recipe-title">
+            <h3>Add Recipe</h3>
+        </div>
+
+        <fieldset>
+            <form method="POST" action="" enctype="multipart/form-data">
+                <div>
+                    {{ form.title.label(class="input-field  validate") }}
+                    {% if form.title.errors %}
+                    {{ form.title(class="input-field   validate invalid") }}
+                    <div class="invalid">
+                        {% for error in form.title.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.title(class="input-field   validate valid") }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    {{ form.main_ingredient.label(class="input-field   validate") }}
+                    {% if form.main_ingredient.errors %}
+                    {{ form.main_ingredient(class="input-field   validate invalid") }}
+                    <div class="invalid">
+                        {% for error in form.main_ingredient.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.main_ingredient(class="input-field   validate valid") }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    {{ form.ingredients.label(class="input-field   validate") }}
+                    {% if form.ingredients.errors %}
+                    {{ form.ingredients(class="input-field   validate invalid") }}
+                    <div class="invalid">
+                        {% for error in form.ingredients.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.ingredients(class="input-field   validate valid") }}
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col s12 m6">
+                        {{ form.servings.label(class="input-field   l8 validate") }}
+                        {% if form.servings.errors %}
+                        {{ form.servings(class="input-field   validate invalid") }}
+                        <div class="invalid">
+                            {% for error in form.servings.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.servings(class="input-field   validate valid") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="col s12 m6">
+                        {{ form.prep_time.label(class="input-field  8 validate") }}
+                        {% if form.prep_time.errors %}
+                        {{ form.prep_time(class="input-field   validate invalid") }}
+                        <div class="invalid">
+                            {% for error in form.prep_time.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.prep_time(class="input-field   validate valid") }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col s12 m6">
+                        {{ form.difficulty.label(class="input-field   validate") }}
+                        {% if form.difficulty.errors %}
+                        {{ form.difficulty(class="input-field   validate invalid") }}
+                        <div class="invalid">
+                            {% for error in form.difficulty.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.difficulty(class="input-field   validate valid") }}
+                        {% endif %}
+                    </div>
+
+                    <div class="col s12 m6">
+                        {{ form.cousine.label(class="input-field  validate") }}
+                        {% if form.cousine.errors %}
+                        {{ form.cousine(class="input-field  validate invalid") }}
+                        <div class="invalid">
+                            {% for error in form.cousine.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.cousine(class="input-field  validate valid") }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    {{ form.keywords.label(class="input-field  validate") }}
+                    {% if form.keywords.errors %}
+                    {{ form.keywords(class="input-field  validate invalid") }}
+                    <div class="invalid">
+                        {% for error in form.keywords.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.keywords(class="input-field validate valid") }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    {{ form.body.label(id="textarea1", class="materialize-textarea validate ") }}
+                    {% if form.body.errors %}
+                    {{ form.body(id="textarea1", class="materialize-textarea validate invalid") }}
+                    {% for error in form.body.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% else %}
+                    {{ form.body(id="textarea1", class="materialize-textarea validate valid") }}
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col s12 m6">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Add recipe</button>
+                    </div>
+                    <div class="col s12 m6 cancel-button">
+                        <a href="{{url_for('home')}}"
+                            class="btn  grey lighten-3 black-text waves-effect waves-light">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+    <br>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var btn = $('#button');
+        $(window).scroll(function () {
+            if ($(window).scrollTop() > 300) {
+                btn.addClass('show');
+            } else {
+                btn.removeClass('show');
+            }
+        });
+
+        btn.on('click', function (e) {
+            e.preventDefault();
+            $('html, body').animate({ scrollTop: 0 }, '300');
+        });
+    });
+</script>
+
+{% endblock content %}

@@ -124,6 +124,69 @@ def count_document(category, subcategory):
 @app.route("/statistics")
 def statistics():
     return render_template('statistics.html', count_document=count_document, title='Statistics')
+
+
+class RecipeForm(Form):
+    title = StringField('Title', validators=[
+                        DataRequired(), Length(min=2, max=70)])
+    main_ingredient = SelectField('Main Ingredient', choices=[('', 'Choose ingredient'), ('eggs', 'eggs'), (
+        'cheese', 'cheese'), ('pasta', 'pasta'), ('wheat', 'wheat'), ('vegs', 'vegs'), ('fruits', 'fruits'), ('meat', 'meat')], validators=[DataRequired()])
+    ingredients = StringField('Ingredients, must be separated by commas', validators=[
+                              DataRequired(), Length(min=2, max=300)])
+    servings = IntegerField('Servings, must be a number', validators=[
+                            DataRequired(message='Integer betweeen 1 and 6 needed'), NumberRange(min=1, max=6, message='Integer betweeen 1 and 6 needed')])
+    body = TextAreaField('Description', validators=[
+                         DataRequired(), Length(min=40)])
+    prep_time = IntegerField('Preparation time in minutes', validators=[
+        DataRequired(message='Integer betweeen 1 and 180 needed'), NumberRange(min=1, max=180, message='Integer betweeen 1 and 180 needed')])
+    difficulty = SelectField('Difficulty', choices=[('', 'Choose difficulty'), ('easy', 'easy'), (
+        'medium', 'medium'), ('difficult', 'difficult')], validators=[DataRequired()])
+    cousine = SelectField('Cousine', choices=[('', 'Choose cousine'), ('asian', 'asian'), (
+        'european', 'european'), ('african', 'african'), ('american', 'american')], validators=[DataRequired()])
+    keywords = StringField('Keywords, must be separated by commas', validators=[
+                           DataRequired(), Length(min=2, max=100)])
+
+    def validate_ingredients(self, ingredients):
+        form = RecipeForm(request.form)
+        ingredients = form.ingredients.data
+        if ' ' in ingredients and not ',' in ingredients:
+            raise ValidationError(
+                'Ingredients must be separated by comma.')
+
+    def validate_keywords(self, keywords):
+        form = RecipeForm(request.form)
+        keywords = form.keywords.data
+        if ' ' in keywords and not ',' in keywords:
+            raise ValidationError(
+                'Keywords must be separated by comma.')
+
+
+@app.route("/add_recipe", methods=["GET", "POST"])
+@login_required
+def add_recipe():
+    form = RecipeForm(request.form)
+    now = datetime.utcnow()
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+        main_ingredient = form.main_ingredient.data
+        ingredients = form.ingredients.data
+        servings = form.servings.data
+        prep_time = form.prep_time.data
+        difficulty = form.difficulty.data
+        cousine = form.cousine.data
+        keywords = form.keywords.data
+        user_id = current_user.get_id()
+        user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
+        author = user['username']
+        date_of_adding = now.strftime("%b %d, %Y")
+        recipes = mongo.db.recipes
+        result = recipes.insert_one({'title': title.capitalize(), 'main_ingredient': main_ingredient, 'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
+                                     'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'author': author, 'date_of_adding': date_of_adding})
+
+        flash('Data saved, You can add image', 'success')
+        return redirect(url_for('home'))
+    return render_template("add_recipe.html", form=form, title='Add Recipe')
     
 @app.route('/')
 def home():
