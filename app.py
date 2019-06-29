@@ -406,18 +406,15 @@ def dashboard():
 class SortForm(FlaskForm):
     sort_by = SelectField(u'Sort by', choices=[('_id1', 'Newest first'), ('_id', 'Oldest first'), (
         "title", 'Name A-Z'), ('title1', 'Name Z-A')], validators=[DataRequired()])
-        
+
 @app.route("/all_recipes/<string:name>/<int:page>", methods=["GET", "POST"])
 def all_recipes(name, page):
     form = SortForm()
     avatar_default = url_for('static', filename='users_avatars/default.jpg')
     image_default = url_for(
         'static', filename='default_recipe/default_recipe_image.png')
-
     num_results = mongo.db.recipes.count_documents({})
-
     sort_by = form.sort_by.data
-
     form.sort_by.default = name
     form.process()
     if '1' in name:
@@ -426,12 +423,64 @@ def all_recipes(name, page):
             name, pymongo.DESCENDING).limit(6).skip(int(page*6))
     else:
         recipes = mongo.db.recipes.find().sort(name).limit(6).skip(int(page*6))
-
     if request.method == "POST" and form.validate:
             return redirect(url_for('all_recipes', name=sort_by, page=0))
-
     return render_template("all_recipes.html", title='All Recipes', page=page, sort_by=sort_by, recipes=recipes, num_results=num_results, 
     form=form,  find_user=find_user, image_default=image_default, avatar_default=avatar_default)
+
+
+class SearchForm(FlaskForm):
+    search = StringField('Search')
+    choose = SelectField('Search in', choices=[('everywhere', 'Everywhere'), (
+        'title', 'Titles'), ('ingredients', 'Ingredients'), ('keywords', 'Keywords')])
+
+@app.route("/results", methods=["GET", "POST"])
+def results():
+    form = SearchForm(request.form)
+    avatar_default = url_for('static', filename='users_avatars/default.jpg')
+    image_default = url_for(
+        'static', filename='default_recipe/default_recipe_image.png')
+    num_result = 0
+    search = form.search.data
+    choose = form.choose.data
+    if request.method == 'POST' and len(search) > 1:
+            if choose == 'title':
+                recipes = mongo.db.recipes.find(
+                    {'title': {'$regex': search, '$options': 'i'}})
+                num_result = recipes.count()
+                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+            if choose == 'ingredients':
+                recipes = mongo.db.recipes.find(
+                    {
+                        "$or": [
+                            {"main_ingredient": {"$regex": search, "$options": "i"}},
+                            {"ingredients": {"$regex": search, "$options": "i"}},
+                        ]
+                    })
+                num_result = recipes.count()
+                return render_template('results.html', form=form,  recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+            if choose == 'keywords':
+                recipes = mongo.db.recipes.find(
+                    {'keywords': {'$regex': search, '$options': 'i'}})
+                num_result = recipes.count()
+                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+            if choose == 'everywhere':
+                recipes = mongo.db.recipes.find(
+                    {
+                        "$or": [
+                            {"title": {"$regex": search, "$options": "i"}},
+                            {"keywords":   {"$regex": search, "$options": "i"}},
+                            {"ingredients":           {
+                                "$regex": search, "$options": "i"}},
+                            {"main_ingredient":           {
+                                "$regex": search, "$options": "i"}},
+                        ]
+                    })
+                num_result = recipes.count()
+                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+    else:
+            flash('Type an expression to search', 'warning')
+    return render_template('results.html', title='Results', form=form, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
 
 @app.route('/')
 def home():

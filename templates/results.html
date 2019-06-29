@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <section class="section teal  dark-text center result-search">
+        <div class="white-text">
+            <h3>Search</h3>
+        </div>
+        <div class="container">
+            <div class=" card-search">
+                <form method="POST" action="{{ url_for('results') }}">
+                    <div class="row search-bar">
+                        <div class="col s12 m8 center align">
+                            <div class="search">
+                                {{ form.search(class="input-field  search-field white validate valid", placeholder='SEARCH') }}
+                                <button type="submit" class="search-button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col s12 m4 center choose-area">
+                            {{ form.choose(class="input-field  choose-field  white  ") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </section>
+</div>
+
+<br>
+<br>
+<div class="container">
+    {%if num_result == 1%}
+    <h5>Found (1) record</h5>
+    {%endif%}
+
+    {%if num_result >1%}
+    <h5>Found ({{num_result}}) records</h5>
+    {%endif%}
+    <div class="row">
+        {%for recipe in recipes %}
+        <div class="col s12 m6 l4  ">
+            <div class="card hoverable">
+                <a href="{{url_for('single_recipe', recipe_id=recipe._id)}}">
+                    <div class="card-image ">
+                        {% if 'recipe_image_name' in recipe %}
+                        <img src="{{url_for('file', filename=recipe['recipe_image_name'])}}" class="recipes-image ">
+                        {% else %}
+                        <img src="{{image_default}}" class="recipes-image">
+                        {% endif %}
+                    </div>
+                </a>
+                <div class="card-content">
+                    <span class="card-title">{{recipe.title}}</span>
+                    <div>Main ingredient: <span class="main-ingredient-color">{{recipe.main_ingredient}}</span></div>
+                    {% if 'profile_image_name' in find_user(recipe.author) %}
+                    <p>By: <img src="{{url_for('file', filename=find_user(recipe.author)['profile_image_name'])}}"
+                            alt="" class="circle all-recipes-avatar  ">&nbsp; {{recipe.author}}
+                    </p>
+                    {% else %}
+                    <p>By: <img src="{{avatar_default}}" alt="" class="circle all-recipes-avatar  ">&nbsp; {{recipe.author}}
+                    </p>
+                    {% endif %}
+
+                    <div>Added: {{recipe.date_of_adding}}</div>
+
+                    <div class="row recipes-icons">
+                        <div class="col">
+                            <i class="far fa-thumbs-up"></i>
+                            {%if recipe.likes%}
+                            ({{recipe.likes}})
+                            {%else%}
+                            (0)
+                            {%endif%}
+                        </div>
+
+                        <div class="col views">
+                            <i class="far fa-eye"></i>
+                            {%if recipe.views%}
+                            ({{recipe.views}})
+                            {%else%}
+                            (0)
+                            {%endif%}
+                        </div>
+
+                        <div class="col">
+                            <i class="far fa-comment"></i>
+                            {%if recipe.comments_number%}
+                            ({{recipe.comments_number}})
+                            {%else%}
+                            (0)
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <a href="{{url_for('single_recipe', recipe_id=recipe._id)}}">View Recipe</a>
+                </div>
+            </div>
+        </div>
+        {%else%}
+        <h5>No records found</h5>
+        {%endfor%}
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.flash').delay().fadeIn('normal', function () {
+            $(this).delay(3000).fadeOut();
+        });
+    });
+</script>
+
+{% endblock content %}
