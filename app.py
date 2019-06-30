@@ -32,7 +32,7 @@ app.config["MAIL_DEFAULT_SENDER"] = 'mpawlowic@gmail.com'
 mail = Mail(app)
 
 #setting variables for mongodb#
-app.config['SECRET_KEY'] = 'secret123'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['MONGO_DBNAME'] = 'task_manager'
 app.config['MONGO_URI'] = os.getenv('MONGO_URI1')  # saved in environmental variables, to hide password
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"] 
