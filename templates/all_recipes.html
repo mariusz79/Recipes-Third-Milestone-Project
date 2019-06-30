@@ -47,7 +47,8 @@
                             alt="" class="circle all-recipes-avatar  ">&nbsp; {{recipe.author}}
                     </p>
                     {% else %}
-                    <p>By: <img src="{{avatar_default}}" alt="" class="circle all-recipes-avatar  ">&nbsp; {{recipe.author}}
+                    <p>By: <img src="{{avatar_default}}" alt="" class="circle all-recipes-avatar  ">&nbsp;
+                        {{recipe.author}}
                     </p>
                     {% endif %}
 
@@ -92,38 +93,30 @@
 
         {%endfor%}
     </div>
-    <!-- 
-        	First check if  actually need a pagination....
-        	If y have 6 documents for example and  display 6 documents as well 
-        	there is no need for pagination ...
-         -->
-    <div class="">
+
+    <div>
         <ul class="pagination">
-            {% if num_results > 6 %}
-            <!-- 
-    			If this is first page (offset == 0) 
-    			prev_url link should not be displayed 
-            -->
-            {% if (page*6) > 0 %}
-            <li class="waves-effect"><a href="{{page-1}}" style="padding: 0px;"><i class="fas fa-chevron-left"></i></a>
-            </li>
-            {% endif %}
-            {% if(page*6) + 6 > num_results %}
-            <span>{{(page*6)+1}}-{{num_results}} of {{num_results}}</span>
-            {% else %}
-            {{(page*6)+1}}-{{(page*6) +6}} of {{num_results}}
-            {% endif %}
-            <!-- 
-    			If this is last page (offset + limit == lenght of the documents) 
-    			prev_url link should not be displayed 
-            -->
-            {% if (page*6) + 6 < num_results  %}
-            <li class="waves-effect"><a href="{{page+1}}" style="padding: 0px;"><i class="fas fa-chevron-right"></i></a>
-            </li>
-            {% endif %}
+            {% if num_results > 6 %} <!--check if pagination is needed-->
+
+                {% if (page*6) > 0 %}
+                <li class="waves-effect"><a href="{{page-1}}" style="padding: 0px;"><i class="fas fa-chevron-left"></i></a>
+                </li>
+                {% endif %}
+
+                {% if(page*6) + 6 > num_results %}
+                <span>{{(page*6)+1}}-{{num_results}} of {{num_results}}</span>
+                {% else %}
+                {{(page*6)+1}}-{{(page*6) +6}} of {{num_results}}
+                {% endif %}
+
+                {% if (page*6) + 6 < num_results  %}
+                <li class="waves-effect"><a href="{{page+1}}" style="padding: 0px;"><i class="fas fa-chevron-right"></i></a>
+                </li>
+                {% endif %}
         </ul>
+            {% endif %}
     </div>
 </div>
-{% endif %}
+
 
 {% endblock content %}

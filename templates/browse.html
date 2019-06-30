@@ -88,31 +88,25 @@
     <div>
         <ul class="pagination">
 
-            {% if num_results > 6 %}
+            {% if num_results > 6 %} <!--check if pagination is needed-->
 
-            <!-- 
-    			If this is first page (offset == 0) 
-    			prev_url link should not be displayed 
-            -->
-            {% if (page*6) > 0 %}
-            <li class="waves-effect"><a href="{{page-1}}" style="padding: 0px;"><i class="fas fa-chevron-left"></i></a>
-            </li>
-            {% endif %}
-            {% if(page*6) + 6 > num_results %}
-            <span>{{(page*6)+1}}-{{num_results}} of {{num_results}}</span>
-            {% else %}
-            {{(page*6)+1}}-{{(page*6) +6}} of {{num_results}}
-            {% endif %}
-            <!-- 
-    			If this is last page (offset + limit == lenght of the documents) 
-    			prev_url link should not be displayed 
-            -->
-            {% if (page*6) + 6 < num_results  %}
-            <li class="waves-effect"><a href="{{page+1}}" style="padding: 0px;"><i class="fas fa-chevron-right"></i></a>
-            </li>
-            {% endif %}
+                {% if (page*6) > 0 %}
+                <li class="waves-effect"><a href="{{page-1}}" style="padding: 0px;"><i class="fas fa-chevron-left"></i></a>
+                </li>
+                {% endif %}
+
+                {% if(page*6) + 6 > num_results %}
+                <span>{{(page*6)+1}}-{{num_results}} of {{num_results}}</span>
+                {% else %}
+                {{(page*6)+1}}-{{(page*6) +6}} of {{num_results}}
+                {% endif %}
+        
+                {% if (page*6) + 6 < num_results  %}
+                <li class="waves-effect"><a href="{{page+1}}" style="padding: 0px;"><i class="fas fa-chevron-right"></i></a>
+                </li>
+                {% endif %}
         </ul>
-        {%endif%}
+            {%endif%}
     </div>
 </div>
 

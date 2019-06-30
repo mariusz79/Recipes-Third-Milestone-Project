@@ -345,7 +345,6 @@ class CommentForm(FlaskForm):
                             DataRequired(), Length(max=200)])
 
 # single recipe page #
-@app.route("/all_recipes/single_recipe/<string:recipe_id>")
 @app.route("/single_recipe/<string:recipe_id>", methods=["GET", "POST"])
 def single_recipe(recipe_id):
     mongo.db.recipes.update_one(
