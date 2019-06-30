@@ -346,7 +346,7 @@ web: python app.py
     - click Reveal Vars
     - set IP to 0.0.0.0
     - set PORT to 5000
-    - set MAIL_PASSWORD and MONGO_URI1
+    - set MAIL_PASSWORD, MONGO_URI1 and SECRET_KEY
 7. Deploying the app on Heroku:
     -  open your Heroku app and go to deploy option 
     -  select the deployment method as  Github,
@@ -369,10 +369,11 @@ Live version of this app can be found [here](https://recipes-flask.herokuapp.com
 ```
 pip install -r requirements.txt
 ```
-8. Set the environmental variables:
+8. Set the environmental variables(FOR ASSESOR):
     - IP = 0.0.0.0 ,
     - PORT = 5000 ,
     - MONGO_URI1 = mongodb+srv://root1:r00tuser1@myfirstcluster-bvngp.mongodb.net/task_manager?retryWrites=true ,
+    - SECRET_KEY = secret123
     - For sending mails you would have to set your own variables.
 9. Start the app 
 ```
