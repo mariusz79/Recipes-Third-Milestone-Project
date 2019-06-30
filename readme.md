@@ -353,6 +353,7 @@ web: python app.py
     -  search your repository with a name and click connect 
     -  app started to deploy on Heroku,  wait for some time 
     -  after the successful message popup, app can be view using URL delivered by Heroku. 
+Live version of this app can be found [here](https://recipes-flask.herokuapp.com/).
 
 #### To clone this repository and run the app locally following steps are needed:
 1. On GitHub, navigate to the main page of the repository.
