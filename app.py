@@ -587,6 +587,7 @@ def terms():
 def about():
     return render_template('about.html', title='About')
 
+
 # to run the app #
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
