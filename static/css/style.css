@@ -8,7 +8,7 @@ main {
     flex: 1 0 auto;
   }
 
-/*navbar*/
+/*--------------navbar-----------------------*/
 .logo-image{
     height: 2rem;
 }
@@ -46,7 +46,7 @@ main {
     background: #75e2b3;
 }
 
-/*footer*/
+/*----------------------footer----------------------*/
 .footer-link:hover{
     color: rgb(20, 13, 1);
 }
@@ -75,7 +75,7 @@ main {
     padding: 10px;
 }
 
-/*dashboard*/
+/*-----------------dashboard-------------------*/
 .profile-button{
     margin-top: 1rem;
     margin-right: 5px;
@@ -109,19 +109,19 @@ main {
     width: fit-content;
 }
 
-/*add recipe*/
+/*-----------------add recipe page-----------------*/
 .add-recipe-title{
     padding: 0;
     margin-top: 2rem;
     display: grid;
 }
 
-/*add image*/
+/*-----------------add image page ------------------*/
 .waves-input-wrapper .waves-button-input {
     top: 10px;
 }
 
-/*single recipe*/
+/*---------------single recipe page-----------------*/
 .recipe-image-panel{
     padding:10px;
     display:inline-block;
@@ -170,7 +170,7 @@ main {
     margin-top: 1rem;
 }
 
-/*all recipes*/
+/*---------------all recipes page ---------------*/
 .recipes-image{
     height: 15rem;
 }
@@ -193,7 +193,47 @@ main {
     border-right: 1px solid #43a047;
 }
 
-/*results page*/
+.card .card-content .card-title {
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: -1px;
+    color: rgb(6, 128, 79);
+    margin-bottom: 0px;
+    overflow: hidden;           /*hide part of text that is too long*/
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card .card-content .card-title:hover{
+    overflow: visible;        /*on hover show full text*/
+    white-space: normal;
+    height:auto; 
+}
+
+.card .card-content {
+    padding: 24px;
+    border-radius: 0 0 2px 2px;
+    padding-top: 0.3rem;
+}
+
+.card .card-content p{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card .card-content p:hover{
+    overflow: visible; 
+    white-space: normal;
+    height:auto; 
+}
+
+.card .card-action {
+    padding: 2px 24px;
+    font-size: large;
+}
+
+/*-----------------results page-------------------*/
 .result-search{
     margin-top: 2rem;
     border-radius: 8px;
@@ -243,7 +283,7 @@ main {
     margin: 0 auto; 
 }
 
-/*home page*/
+/*------------------home page----------------------*/
 .card-search{
     width: 100%; 
     margin: 0 auto;
@@ -292,7 +332,7 @@ main {
     width: 100%;
 }
 
-/*browse page*/
+/*--------------------browse page------------------*/
 .category{
     color: #1fa3a7;
 }
@@ -301,7 +341,7 @@ main {
     color: #cea400;
 }
 
-/*alerts*/
+/*--------------------alerts------------------------*/
 .materialert{
     position: relative;
     min-width: 150px;
@@ -349,49 +389,7 @@ main {
     color: #fff;
 }
 
-/*hide part of text that is too long*/
-.card .card-content .card-title {
-    font-size: 20px;
-    font-weight: 300;
-    letter-spacing: -1px;
-    color: rgb(6, 128, 79);
-    margin-bottom: 0px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/*on hover show full text*/
-.card .card-content .card-title:hover{
-    overflow: visible; 
-    white-space: normal;
-    height:auto; 
-}
-
-.card .card-content {
-    padding: 24px;
-    border-radius: 0 0 2px 2px;
-    padding-top: 0.3rem;
-}
-
-.card .card-content p{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.card .card-content p:hover{
-    overflow: visible; 
-    white-space: normal;
-    height:auto; 
-}
-
-.card .card-action {
-    padding: 2px 24px;
-    font-size: large;
-}
-
-/*srcoll up button*/
+/*---------------scroll up button--------------------*/
 #button-up {
   display: inline-block;
   background-color: #FF9800;
@@ -441,7 +439,7 @@ font-size: xx-large;
     color: azure;
 }
 
-/*media queries*/
+/*-----------------media queries----------------------*/
 @media (max-width: 600px){
     .social-icons, .footer-links{
         text-align: center;

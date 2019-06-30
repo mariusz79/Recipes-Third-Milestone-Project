@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<!---------------------------------images slider---------------------------------------------------->
 <div class="slider">
     <ul class="slides">
         <li>
@@ -28,7 +29,7 @@
     </ul>
 </div>
 
-
+<!---------------------------------------Searchbar-------------------------------------------------->
 <section class="section teal dark-text center">
     <br>
     <div class="container">
@@ -45,16 +46,15 @@
                         </div>
                     </div>
                     <div class="col s12 m4 center choose-area">
-
                         {{ form.choose(class="input-field  choose-field  white  ") }}
                     </div>
                 </div>
-
             </form>
         </div>
     </div>
 </section>
 
+<!-------------------------------------info icons--------------------------------------------------------->
 <div class="section blue-grey lighten-5">
     <div class="container">
         <div class="row">
@@ -74,6 +74,7 @@
     </div>
 </div>
 
+<!-------------------------------------latest recipes-------------------------------------------------->
 <section class=" section grey lighten-4">
     <h4 class="center">
         <span class="teal-text">Latest</span> Recipes</h4>
@@ -90,7 +91,6 @@
                             <img src="{{image_default}}" class="recipes-image">
                             {% endif %}
                         </div>
-
                         <div class="title">
                             <span class="recipe-title-home-page">{{recipe.title}}</span>
                             <li>Added: {{recipe.date_of_adding}}</li>
@@ -104,7 +104,7 @@
     </div>
 </section>
 
-
+<!----------------------------------------most liked recipes---------------------------------->
 <div class="section blue-grey lighten-5">
     <h4 class="center">
         <span class="teal-text">Most Liked</span> Recipes</h4>
@@ -139,7 +139,7 @@
 </div>
 </div>
 
-
+<!----------------------------------------browse by category section--------------------------------------->
 <section class=" section grey lighten-4">
     <h4 class="center">
         <span class="teal-text">Browse</span> by category</h4>

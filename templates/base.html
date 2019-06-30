@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
     <link rel="stylesheet" href=" {{url_for('static', filename='css/style.css') }}" type="text/css">
 
+    <!--page title-->
     {% if title %}
     <title>Recipes - {{ title }}</title>
     {% else %}
@@ -21,7 +22,7 @@
 
 <body>
     <header>
-
+        <!--navbar-->
         <div class="navbar-fixed">
             <nav>
                 <div class="nav-wrapper teal lighten-2 ">
@@ -85,17 +86,19 @@
     </header>
 
     <main>
+        <!--scroll up button-->
         <a id="button-up"><i class="fa fa-angle-up arrow-up"></i></a>
         <div class="container">
+            <!--flask messages-->
             {% include 'includes/_messages.html' %}
         </div>
         
         {% block content %}
         {% endblock %}
 
-
     </main>
 
+    <!--footer-->
     <footer class="page-footer  teal">
         <div class="row">
             <div class="col m6 s12 footer-links">
@@ -116,7 +119,7 @@
             </div>
     </footer>
 
-
+    <!-- Scripts located at the bottom of the body to insure page is fully loaded before execution -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <script type="text/javascript">
@@ -131,6 +134,7 @@
             $(".dropdown-button").dropdown();
             $('.collapsible').collapsible();
             $('select').material_select();
+
             var btnup = $('#button-up');
 
             $(window).scroll(function () {
@@ -146,7 +150,6 @@
                 $('html, body').animate({ scrollTop: 0 }, '300');
             });
         });
-
     </script>
 
 </body>

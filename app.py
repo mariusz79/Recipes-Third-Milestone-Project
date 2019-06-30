@@ -1,3 +1,5 @@
+#importing modules and extensions#
+##################################
 import os
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 from flask_pymongo import PyMongo, pymongo
@@ -11,35 +13,34 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 from flask_mail import Mail, Message
 
+#######################
+# configuring the app #
+#######################
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
-
 login_manager = LoginManager(app)
-#where to redirect
-login_manager.login_view = 'login'
-#change message category
-login_manager.login_message_category = 'info'
+login_manager.login_view = 'login'      #where to redirect
+login_manager.login_message_category = 'info'   #change message category
 
+# setting variables for mail#
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = 'mpawlowic@gmail.com'
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD") # saved in environmental variables, to hide password
 app.config["MAIL_DEFAULT_SENDER"] = 'mpawlowic@gmail.com'
-
 mail = Mail(app)
 
+#setting variables for mongodb#
 app.config['SECRET_KEY'] = 'secret123'
 app.config['MONGO_DBNAME'] = 'task_manager'
-app.config['MONGO_URI'] = os.getenv('MONGO_URI1')  # 'MONGO_URI1' is saved in environmental variables, to hide password
-app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
-
+app.config['MONGO_URI'] = os.getenv('MONGO_URI1')  # saved in environmental variables, to hide password
+app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"] 
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024 # max size for files uploaded by users
 mongo = PyMongo(app)
 
 now = datetime.now()
 users = mongo.db.users
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -58,6 +59,7 @@ class User(UserMixin):
         object_id = self.user_json.get('_id')
         return str(object_id)
 
+# register form #
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[
                            DataRequired(), Length(min=2, max=20)])
@@ -75,39 +77,42 @@ class RegisterForm(FlaskForm):
             raise ValidationError(
                 'That username is taken. Please choose a different one.')
 
-
+# register new user #
 @app.route("/register", methods=["GET", "POST"])
 def register():
     #create an instance of RegisterForm
     form = RegisterForm(request.form)
-     
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     if request.method == 'POST' and form.validate():
         username = form.username.data
         password = bcrypt.generate_password_hash(
-            form.password.data).decode('utf-8')
+            form.password.data).decode('utf-8')             # code password
         date_of_registration = now.strftime("%b %d, %Y")
-        users.insert_one({'username': username, 'password': password,
+        users.insert_one({'username': username, 'password': password,   #add new user to database
                           'date_of_registration': date_of_registration})
         loginuser_json = users.find_one({'username': username})
         loginuser = User(loginuser_json)
-        login_user(loginuser)
+        login_user(loginuser)            #login user after successfull registering
         flash('You are now registered!', 'success')
         return redirect(url_for('home'))
     return render_template("register.html", form=form, title='Register')
 
-
+# login form #
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
 
-
+# login user #
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     if form.validate_on_submit():
         loginuser_json = users.find_one({'username': form.username.data})
+        #check if passwords typed by user and stored in database are the same
         if loginuser_json and bcrypt.check_password_hash(loginuser_json['password'], form.password.data):
             # Create a custom user and pass it to login_user:
             loginuser = User(loginuser_json)
@@ -119,12 +124,14 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+# logout user #
 @app.route("/logout")
 def logout():
     logout_user()
     flash('You are now logged out', 'info')
     return redirect(url_for('login'))
 
+# function for counting documents in the database #
 def count_document(category, subcategory):
         if category == 'servings' or category == 'prep_time':
             nums = subcategory.split('-')
@@ -133,24 +140,28 @@ def count_document(category, subcategory):
             recipes = mongo.db.recipes.count_documents({category: subcategory})
         return recipes
 
+# statistics page #
 @app.route("/statistics")
 def statistics():
     return render_template('statistics.html', count_document=count_document, title='Statistics')
 
-
+# add new recipe form #
 class RecipeForm(Form):
     title = StringField('Title', validators=[
                         DataRequired(), Length(min=2, max=70)])
     main_ingredient = SelectField('Main Ingredient', choices=[('', 'Choose ingredient'), ('eggs', 'eggs'), (
-        'cheese', 'cheese'), ('pasta', 'pasta'), ('wheat', 'wheat'), ('vegs', 'vegs'), ('fruits', 'fruits'), ('meat', 'meat')], validators=[DataRequired()])
+        'cheese', 'cheese'), ('pasta', 'pasta'), ('wheat', 'wheat'), ('vegs', 'vegs'), ('fruits', 'fruits'), 
+        ('meat', 'meat')], validators=[DataRequired()])
     ingredients = StringField('Ingredients, must be separated by commas', validators=[
                               DataRequired(), Length(min=2, max=300)])
     servings = IntegerField('Servings, must be a number', validators=[
-                            DataRequired(message='Integer betweeen 1 and 6 needed'), NumberRange(min=1, max=6, message='Integer betweeen 1 and 6 needed')])
+                            DataRequired(message='Integer betweeen 1 and 6 needed'), NumberRange(min=1, max=6, 
+                            message='Integer betweeen 1 and 6 needed')])
     body = TextAreaField('Description', validators=[
                          DataRequired(), Length(min=40)])
     prep_time = IntegerField('Preparation time in minutes', validators=[
-        DataRequired(message='Integer betweeen 1 and 180 needed'), NumberRange(min=1, max=180, message='Integer betweeen 1 and 180 needed')])
+        DataRequired(message='Integer betweeen 1 and 180 needed'), NumberRange(min=1, max=180, 
+        message='Integer betweeen 1 and 180 needed')])
     difficulty = SelectField('Difficulty', choices=[('', 'Choose difficulty'), ('easy', 'easy'), (
         'medium', 'medium'), ('difficult', 'difficult')], validators=[DataRequired()])
     cousine = SelectField('Cousine', choices=[('', 'Choose cousine'), ('asian', 'asian'), (
@@ -158,6 +169,7 @@ class RecipeForm(Form):
     keywords = StringField('Keywords, must be separated by commas', validators=[
                            DataRequired(), Length(min=2, max=100)])
 
+    #check if ingredients are separated by comma
     def validate_ingredients(self, ingredients):
         form = RecipeForm(request.form)
         ingredients = form.ingredients.data
@@ -165,6 +177,7 @@ class RecipeForm(Form):
             raise ValidationError(
                 'Ingredients must be separated by comma.')
 
+    #check if keywords are separated by comma
     def validate_keywords(self, keywords):
         form = RecipeForm(request.form)
         keywords = form.keywords.data
@@ -172,7 +185,7 @@ class RecipeForm(Form):
             raise ValidationError(
                 'Keywords must be separated by comma.')
 
-
+# add new recipe #
 @app.route("/add_recipe", methods=["GET", "POST"])
 @login_required
 def add_recipe():
@@ -193,14 +206,16 @@ def add_recipe():
         author = user['username']
         date_of_adding = now.strftime("%b %d, %Y")
         recipes = mongo.db.recipes
-        result = recipes.insert_one({'title': title.capitalize(), 'main_ingredient': main_ingredient, 'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
-                                     'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'author': author, 'date_of_adding': date_of_adding})
+        result = recipes.insert_one({'title': title.capitalize(), 'main_ingredient': main_ingredient, 
+        'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
+                                     'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'author': author, 
+                                     'date_of_adding': date_of_adding})
 
         flash('Data saved, You can add image', 'success')
         return redirect(url_for('add_recipe_image', recipe_id=result.inserted_id))
     return render_template("add_recipe.html", form=form, title='Add Recipe')
 
-
+# checking if image has allowed extension
 def allowed_image(filename):
     # Only want files with a . in the filename
     if not "." in filename:
@@ -213,20 +228,20 @@ def allowed_image(filename):
     else:
         return False
 
-
+# checking if image has allowed size
 def allowed_image_filesize(filesize):
     if int(filesize) <= app.config['MAX_CONTENT_LENGTH']:
         return True
     else:
         return False
 
-
+# add recipe image page #
 @app.route('/add_recipe_image/<recipe_id>')
 def add_recipe_image(recipe_id):
     the_recipe = mongo.db.recipes.find_one({'_id': ObjectId(recipe_id)})
     return render_template('add_recipe_image.html', recipe_id=recipe_id, recipe=the_recipe, title='Add Image')
 
-
+# upload recipe image to the database #
 @app.route('/upload_recipe_image/<recipe_id>', methods=["GET", "POST"])
 def upload_recipe_image(recipe_id):
     if 'recipe_image' in request.files:
@@ -238,18 +253,17 @@ def upload_recipe_image(recipe_id):
                     flash('That file extension is not allowed!', 'error')
                     return redirect(url_for('add_recipe_image', recipe_id=recipe_id))
         mongo.save_file(recipe_image.filename, recipe_image)
-
         mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {
                                     '$set': {'recipe_image_name': recipe_image.filename}})
         flash('Image has been added', 'success')
     return redirect(url_for('dashboard'))
 
-
+# add avatar image page #
 @app.route('/add_image')
 def add_image():
     return render_template('add_avatar.html', title='Add Avatar')
 
-
+# upload image for avatar #
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
     if 'profile_image' in request.files:
@@ -269,11 +283,12 @@ def upload():
         flash('Your avatar has been added', 'success')
         return redirect(url_for('dashboard'))
 
+# get image from the database #
 @app.route('/file/<filename>')
 def file(filename):
     return mongo.send_file(filename)
 
-
+# edit recipe #
 @app.route("/edit_recipe/<string:recipe_id>", methods=['GET', 'POST'])
 @login_required
 def edit_recipe(recipe_id):
@@ -293,8 +308,10 @@ def edit_recipe(recipe_id):
         date_of_update = now.strftime("%b %d, %Y")
         recipes = mongo.db.recipes
         recipes.update({'_id': ObjectId(recipe_id)}, {
-                       '$set': {'title': title.capitalize(), 'main_ingredient': main_ingredient, 'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
-                                'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 'date_of_update': date_of_update}})
+                       '$set': {'title': title.capitalize(), 'main_ingredient': main_ingredient, 
+                       'ingredients': ingredients, 'servings': servings, 'prep_time': prep_time, 'body': body,
+                                'difficulty': difficulty, 'cousine': cousine, 'keywords': keywords, 
+                                'date_of_update': date_of_update}})
         flash('Your recipe has been updated', 'success')
         return redirect(url_for('dashboard'))
     elif request.method == 'GET':
@@ -309,7 +326,7 @@ def edit_recipe(recipe_id):
         form.keywords.data = recipe['keywords']
     return render_template('edit_recipe.html', title='Edit recipe', recipe=recipe, form=form)
 
-
+# delete recipe #
 @app.route('/delete_recipe/<string:recipe_id>', methods=['POST'])
 @login_required
 def delete_recipe(recipe_id):
@@ -317,15 +334,17 @@ def delete_recipe(recipe_id):
     flash('Recipe Deleted', 'success')
     return redirect(url_for('dashboard'))
 
+# find user by username
 def find_user(username):
         user_ = mongo.db.users.find_one({'username': username})
         return user_
 
-
+# comment form #
 class CommentForm(FlaskForm):
     comment = TextAreaField('comment', validators=[
                             DataRequired(), Length(max=200)])
 
+# single recipe page #
 @app.route("/all_recipes/single_recipe/<string:recipe_id>")
 @app.route("/single_recipe/<string:recipe_id>", methods=["GET", "POST"])
 def single_recipe(recipe_id):
@@ -349,9 +368,10 @@ def single_recipe(recipe_id):
     if request.method == "POST" and form.validate:
             return redirect(url_for('add_comment', recipe_id=the_recipe['_id'], comment=comment))
 
-    return render_template('single_recipe.html', title='The Recipe', recipe=the_recipe, user=user, ingredients=ingredients, keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
+    return render_template('single_recipe.html', title='The Recipe', recipe=the_recipe, user=user, ingredients=ingredients, 
+    keywords=keywords, image_default=image_default, find_user=find_user, form=form,  avatar_default=avatar_default)
     
-
+# like recipe #
 @app.route("/like_recipe/<string:recipe_id>",  methods=["GET", "POST"])
 @login_required
 def like_recipe(recipe_id):
@@ -359,10 +379,10 @@ def like_recipe(recipe_id):
     user = mongo.db.users.find_one({"_id": ObjectId(user_id)})
     the_recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     if 'liked' in user:
-        if the_recipe['_id'] in user['liked']:
+        if the_recipe['_id'] in user['liked']:      #check if user has liked the recipe already
             flash('You can like recipe only once', 'info')
             return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
-        elif user['username'] == the_recipe['author']:
+        elif user['username'] == the_recipe['author']:      #check if user is an author of the recipe
             flash("You can't like your own recipe", 'info')
             return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
         else:
@@ -374,7 +394,7 @@ def like_recipe(recipe_id):
             mongo.db.recipes.update_one({'_id': ObjectId(recipe_id)}, {'$inc': {'likes': 1, 'views': -1}})
             return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
 
-
+# add comment #
 @app.route("/add_comment/<string:recipe_id>/<string:comment>",  methods=["GET", "POST"])
 @login_required
 def add_comment(recipe_id, comment):
@@ -394,7 +414,7 @@ def add_comment(recipe_id, comment):
                                 '$inc': {'comments_number': 1}})
     return redirect(url_for('single_recipe', recipe_id=the_recipe['_id']))
 
-
+# dashboard #
 @app.route("/dashboard", methods=["GET", "POST"])
 @login_required
 def dashboard():
@@ -410,13 +430,15 @@ def dashboard():
                 {"_id": ObjectId(recipe_id)})
             if find_recipe:
                 return find_recipe['title']
-    return render_template("dashboard.html", find_recipe_name=find_recipe_name, title='Dashboard', user=user, avatar_default=avatar_default, recipes=recipes, num_of_recipes=num_of_recipes)
+    return render_template("dashboard.html", find_recipe_name=find_recipe_name, title='Dashboard', user=user, 
+    avatar_default=avatar_default, recipes=recipes, num_of_recipes=num_of_recipes)
 
-
+# form used for sorting recipes by name and date #
 class SortForm(FlaskForm):
     sort_by = SelectField(u'Sort by', choices=[('_id1', 'Newest first'), ('_id', 'Oldest first'), (
         "title", 'Name A-Z'), ('title1', 'Name Z-A')], validators=[DataRequired()])
 
+# viewing all recipes with pagination #
 @app.route("/all_recipes/<string:name>/<int:page>", methods=["GET", "POST"])
 def all_recipes(name, page):
     form = SortForm()
@@ -427,7 +449,7 @@ def all_recipes(name, page):
     sort_by = form.sort_by.data
     form.sort_by.default = name
     form.process()
-    if '1' in name:
+    if '1' in name:                     # '1' is used here for descending sort
         name = name[:-1]
         recipes = mongo.db.recipes.find().sort(
             name, pymongo.DESCENDING).limit(6).skip(int(page*6))
@@ -435,15 +457,16 @@ def all_recipes(name, page):
         recipes = mongo.db.recipes.find().sort(name).limit(6).skip(int(page*6))
     if request.method == "POST" and form.validate:
             return redirect(url_for('all_recipes', name=sort_by, page=0))
-    return render_template("all_recipes.html", title='All Recipes', page=page, sort_by=sort_by, recipes=recipes, num_results=num_results, 
-    form=form,  find_user=find_user, image_default=image_default, avatar_default=avatar_default)
+    return render_template("all_recipes.html", title='All Recipes', page=page, sort_by=sort_by, recipes=recipes, 
+    num_results=num_results, form=form,  find_user=find_user, image_default=image_default, avatar_default=avatar_default)
 
-
+# form for searching recipes #
 class SearchForm(FlaskForm):
     search = StringField('Search')
-    choose = SelectField('Search in', choices=[('everywhere', 'Everywhere'), (
-        'title', 'Titles'), ('ingredients', 'Ingredients'), ('keywords', 'Keywords')])
+    choose = SelectField('Search in', choices=[('everywhere', 'Everywhere'), 
+    ('title', 'Titles'), ('ingredients', 'Ingredients'), ('keywords', 'Keywords')])
 
+# viewing results of search #
 @app.route("/results", methods=["GET", "POST"])
 def results():
     form = SearchForm(request.form)
@@ -458,7 +481,8 @@ def results():
                 recipes = mongo.db.recipes.find(
                     {'title': {'$regex': search, '$options': 'i'}})
                 num_result = recipes.count()
-                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, 
+                avatar_default=avatar_default, image_default=image_default)
             if choose == 'ingredients':
                 recipes = mongo.db.recipes.find(
                     {
@@ -468,12 +492,14 @@ def results():
                         ]
                     })
                 num_result = recipes.count()
-                return render_template('results.html', form=form,  recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+                return render_template('results.html', form=form,  recipes=recipes, find_user=find_user, num_result=num_result, 
+                avatar_default=avatar_default, image_default=image_default)
             if choose == 'keywords':
                 recipes = mongo.db.recipes.find(
                     {'keywords': {'$regex': search, '$options': 'i'}})
                 num_result = recipes.count()
-                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, 
+                avatar_default=avatar_default, image_default=image_default)
             if choose == 'everywhere':
                 recipes = mongo.db.recipes.find(
                     {
@@ -487,12 +513,14 @@ def results():
                         ]
                     })
                 num_result = recipes.count()
-                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+                return render_template('results.html', form=form, recipes=recipes, find_user=find_user, num_result=num_result, 
+                avatar_default=avatar_default, image_default=image_default)
     else:
             flash('Type an expression to search', 'warning')
-    return render_template('results.html', title='Results', form=form, find_user=find_user, num_result=num_result, avatar_default=avatar_default, image_default=image_default)
+    return render_template('results.html', title='Results', form=form, find_user=find_user, num_result=num_result, 
+    avatar_default=avatar_default, image_default=image_default)
 
-
+# home page #
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
@@ -506,27 +534,33 @@ def home():
     most_liked_recipes = mongo.db.recipes.find(
         {'likes': {'$exists': True}}, sort=[('likes', -1)], limit=3)
     form = SearchForm(request.form)
-    return render_template("home.html", title='Recipes', form=form, find_user=find_user, count_document=count_document, avatar_default=avatar_default, image_default=image_default, num_of_recipes=num_of_recipes, num_of_users=num_of_users, latest_recipes=latest_recipes, most_liked_recipes=most_liked_recipes)
+    return render_template("home.html", title='Recipes', form=form, find_user=find_user, count_document=count_document, 
+    avatar_default=avatar_default, image_default=image_default, num_of_recipes=num_of_recipes, num_of_users=num_of_users, 
+    latest_recipes=latest_recipes, most_liked_recipes=most_liked_recipes)
 
+# viewing recipes by category and subcategory #
 @app.route("/browse/<string:category>/<string:subcategory>/<int:page>")
 def browse(category, subcategory, page):
     avatar_default = url_for('static', filename='users_avatars/default.jpg')
     image_default = url_for('static', filename='default_recipe/default_recipe_image.png')
-    if category == 'servings' or category == 'prep_time':
+    if category == 'servings' or category == 'prep_time':   
         nums = subcategory.split('-')
         recipes = mongo.db.recipes.find({ category : { '$gt' :  int(nums[0]), '$lt' : int(nums[1])}}).limit(6).skip(int(page*6))
     else:
         recipes = mongo.db.recipes.find({category: subcategory}).limit(6).skip(int(page*6))
     num_results = recipes.count()
     nums = subcategory.split('-')
-    return render_template('browse.html', title='Browse', page=page, category =category, subcategory=subcategory, nums=nums, recipes=recipes, num_results=num_results, avatar_default=avatar_default, image_default=image_default, find_user=find_user)
+    return render_template('browse.html', title='Browse', page=page, category =category, subcategory=subcategory, nums=nums, 
+    recipes=recipes, num_results=num_results, avatar_default=avatar_default, image_default=image_default, find_user=find_user)
 
+# contact form #
 class ContactForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired(), Length(min=2, max=40)])
     email = StringField("Email" , validators=[DataRequired(), Length(min=2, max=30), Email()])
     subject = StringField("Subject" , validators=[DataRequired(), Length(min=2, max=40)])
     message = TextAreaField("Message", validators=[DataRequired(), Length(min=2, max=300)])
-    
+
+# contact page #   
 @app.route('/contact', methods=['GET','POST'])
 def contact():
   form = ContactForm()
@@ -536,22 +570,25 @@ def contact():
         subject = form.subject.data
         message = form.message.data
         msg = Message("Hi", recipients=['mpawlowic@gmail.com'])
-        msg.body = 'From: {name} \n email: {email} \n subject: {subject} \n message: {message}'.format(name=name, email=email, subject=subject, message=message)
+        msg.body = 'From: {name} \n email: {email} \n subject: {subject} \n message: {message}'.format(name=name, email=email, 
+            subject=subject, message=message)
         mail.send(msg)
         flash('Your message has been sent!', 'success')
         return redirect(url_for('contact'))
   return render_template('contact.html', form=form, title='Contact')
 
+# terms page #
 @app.route('/terms')
 def terms():
     return render_template('terms.html', title='Terms of use')
 
+# about page #
 @app.route('/about')
 def about():
     return render_template('about.html', title='About')
 
 
-
+# to run the app #
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
             port=os.environ.get('PORT'),
