@@ -125,6 +125,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <script type="text/javascript">
+              //Preloader
+            $(window).on("load", function () {
+                preloaderFadeOutTime = 500;
+                function hidePreloader() {
+                    var preloader = $('.spinner-wrapper');
+                    preloader.fadeOut(preloaderFadeOutTime);
+                }
+                hidePreloader();
+            });
+            
         $(document).ready(function () {
             $('.button-collapse').sideNav({
                 closeOnClick: true,
@@ -152,15 +162,6 @@
                 $('html, body').animate({ scrollTop: 0 }, '300');
             });
 
-             //Preloader
-            $(window).on("load", function () {
-                preloaderFadeOutTime = 500;
-                function hidePreloader() {
-                    var preloader = $('.spinner-wrapper');
-                    preloader.fadeOut(preloaderFadeOutTime);
-                }
-                hidePreloader();
-            });
         });
     </script>
 

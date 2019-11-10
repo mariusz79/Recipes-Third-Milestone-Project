@@ -277,18 +277,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('.collapsible').collapsible();
-        $('.flash').delay().fadeIn('normal', function () {
-            $(this).delay(3000).fadeOut();
-        });
-        $('.slider').slider({
-            indicators: false,
-            height: 320,
-            transition: 400,
-            interval: 4000
-        });
-         //Preloader
+           //Preloader
         $(window).on("load", function () {
             preloaderFadeOutTime = 500;
             function hidePreloader() {
@@ -297,7 +286,20 @@
             }
             hidePreloader();
         });
-    });
+        
+        $(document).ready(function () {
+            $('.collapsible').collapsible();
+            $('.flash').delay().fadeIn('normal', function () {
+                $(this).delay(3000).fadeOut();
+            });
+            $('.slider').slider({
+                indicators: false,
+                height: 320,
+                transition: 400,
+                interval: 4000
+            });
+  
+         });
 </script>
 
 {% endblock content %}
